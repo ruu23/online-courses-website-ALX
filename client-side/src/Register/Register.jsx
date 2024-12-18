@@ -30,18 +30,25 @@ const Register = () => {
 
     try {
       const response = await fetch("http://localhost:5000/register", {
-        method: "POST",
-        body: data,
+          method: "POST",
+          body: data,
       });
 
+      if (!response.ok) {
+          const errorData = await response.json();
+          alert(errorData.error || 'Registration failed');
+          return;
+      }
+
       const result = await response.json();
-      alert(result.message);
-    } catch (error) {
+      alert(result.message || 'Registration successful');
+      // Optional: Redirect to login page after successful registration
+      // window.location.href = '/login';
+  } catch (error) {
       console.error("Error:", error);
       alert("An error occurred. Please try again.");
-    }
-  };
-
+  }
+};
   return (
     <>
       <section className="form-container">
