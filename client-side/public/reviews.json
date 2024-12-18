@@ -1,0 +1,44 @@
+{
+  "reviews": [
+    {
+      "text": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Necessitatibus, suscipit a. Quibusdam, dignissimos consectetur. Sed ullam iusto eveniet qui aut quibusdam vero voluptate libero facilis fuga. Eligendi eaque molestiae modi?",
+      "student": {
+        "name": "John Deo",
+        "image": "/images/pic-2.jpg",
+        "rating": 4.5
+      }
+    },
+    {
+      "text": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Necessitatibus, suscipit a. Quibusdam, dignissimos consectetur. Sed ullam iusto eveniet qui aut quibusdam vero voluptate libero facilis fuga. Eligendi eaque molestiae modi?",
+      "student": {
+        "name": "Jane Smith",
+        "image": "/images/pic-3.jpg",
+        "rating": 5
+      }
+    },
+    {
+      "text": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Necessitatibus, suscipit a. Quibusdam, dignissimos consectetur. Sed ullam iusto eveniet qui aut quibusdam vero voluptate libero facilis fuga. Eligendi eaque molestiae modi?",
+      "student": {
+        "name": "Sam Lee",
+        "image": "/images/pic-4.jpg",
+        "rating": 4
+      }
+    },
+    {
+      "text": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Necessitatibus, suscipit a. Quibusdam, dignissimos consectetur. Sed ullam iusto eveniet qui aut quibusdam vero voluptate libero facilis fuga. Eligendi eaque molestiae modi?",
+      "student": {
+        "name": "Sara Kim",
+        "image": "/images/pic-5.jpg",
+        "rating": 3.5
+      }
+    },
+    {
+      "text": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Necessitatibus, suscipit a. Quibusdam, dignissimos consectetur. Sed ullam iusto eveniet qui aut quibusdam vero voluptate libero facilis fuga. Eligendi eaque molestiae modi?",
+      "student": {
+        "name": "Michael Brown",
+        "image": "/images/pic-6.jpg",
+        "rating": 4
+      }
+    }
+  ]
+}

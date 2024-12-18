@@ -1,0 +1,284 @@
+{
+  "playlists": [
+    {
+      "id": 1,
+      "title": "Complete HTML Tutorial",
+      "tutor": {
+        "name": "John Deo",
+        "image": "/images/pic-2.jpg",
+        "date": "21-10-2022"
+      },
+      "thumbnail": {
+        "image": "/images/thumb-1.png",
+        "videos": 10
+      },
+      "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum minus reiciendis, error sunt veritatis exercitationem deserunt velit doloribus itaque voluptate.",
+      "videos": [
+        {
+          "id": 1,
+          "title": "Complete HTML tutorial (part 01)",
+          "image": "/images/post-1-1.png",
+          "link": "/watch-video"
+        },
+        {
+          "id": 2,
+          "title": "Complete HTML tutorial (part 02)",
+          "image": "/images/post-1-2.png",
+          "link": "/watch-video"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Complete CSS Tutorial",
+      "tutor": {
+        "name": "Jane Doe",
+        "image": "/images/pic-3.jpg",
+        "date": "22-10-2022"
+      },
+      "thumbnail": {
+        "image": "/images/thumb-2.png",
+        "videos": 15
+      },
+      "description": "Learn CSS from scratch with detailed examples and projects.",
+      "videos": [
+        {
+          "id": 1,
+          "title": "Complete CSS tutorial (part 01)",
+          "image": "/images/post-2-1.png",
+          "link": "/watch-video"
+        },
+        {
+          "id": 2,
+          "title": "Complete CSS tutorial (part 02)",
+          "image": "/images/post-2-2.png",
+          "link": "/watch-video.html"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Complete JS Tutorial",
+      "tutor": {
+        "name": "Sam Smith",
+        "image": "/images/pic-4.jpg",
+        "date": "23-10-2022"
+      },
+      "thumbnail": {
+        "image": "/images/thumb-3.png",
+        "videos": 20
+      },
+      "description": "Master JavaScript with comprehensive tutorials and examples.",
+      "videos": [
+        {
+          "id": 1,
+          "title": "Complete JS tutorial (part 01)",
+          "image": "/images/post-3-1.png",
+          "link": "/watch-video"
+        },
+        {
+          "id": 2,
+          "title": "Complete JS tutorial (part 02)",
+          "image": "/images/post-3-2.png",
+          "link": "/watch-video"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Complete Bootstrap Tutorial",
+      "tutor": {
+        "name": "Alice Brown",
+        "image": "/images/pic-5.jpg",
+        "date": "24-10-2022"
+      },
+      "thumbnail": {
+        "image": "/images/thumb-4.png",
+        "videos": 12
+      },
+      "description": "Learn how to build responsive websites with Bootstrap.",
+      "videos": [
+        {
+          "id": 1,
+          "title": "Bootstrap tutorial (part 01)",
+          "image": "/images/post-4-1.png",
+          "link": "/watch-video"
+        },
+        {
+          "id": 2,
+          "title": "Bootstrap tutorial (part 02)",
+          "image": "/images/post-4-2.png",
+          "link": "/watch-video"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Complete JQuery Tutorial",
+      "tutor": {
+        "name": "Michael Lee",
+        "image": "/images/pic-6.jpg",
+        "date": "25-10-2022"
+      },
+      "thumbnail": {
+        "image": "/images/thumb-5.png",
+        "videos": 10
+      },
+      "description": "Learn how to manipulate the DOM and handle events using JQuery.",
+      "videos": [
+        {
+          "id": 1,
+          "title": "JQuery tutorial (part 01)",
+          "image": "/images/post-5-1.png",
+          "link": "/watch-video"
+        },
+        {
+          "id": 2,
+          "title": "JQuery tutorial (part 02)",
+          "image": "/images/post-5-2.png",
+          "link": "/watch-video"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Complete SASS Tutorial",
+      "tutor": {
+        "name": "Emma Davis",
+        "image": "/images/pic-7.jpg",
+        "date": "26-10-2022"
+      },
+      "thumbnail": {
+        "image": "/images/thumb-6.png",
+        "videos": 8
+      },
+      "description": "Understand SASS and how to write maintainable CSS.",
+      "videos": [
+        {
+          "id": 1,
+          "title": "SASS tutorial (part 01)",
+          "image": "/images/post-6-1.png",
+          "link": "/watch-video"
+        },
+        {
+          "id": 2,
+          "title": "SASS tutorial (part 02)",
+          "image": "/images/post-6-2.png",
+          "link": "/watch-video"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Complete PHP Tutorial",
+      "tutor": {
+        "name": "Chris Martin",
+        "image": "/images/pic-8.jpg",
+        "date": "27-10-2022"
+      },
+      "thumbnail": {
+        "image": "/images/thumb-7.png",
+        "videos": 15
+      },
+      "description": "Learn server-side scripting with PHP.",
+      "videos": [
+        {
+          "id": 1,
+          "title": "PHP tutorial (part 01)",
+          "image": "/images/post-7-1.png",
+          "link": "/watch-video"
+        },
+        {
+          "id": 2,
+          "title": "PHP tutorial (part 02)",
+          "image": "/images/post-7-2.png",
+          "link": "/watch-video"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Complete MySQL Tutorial",
+      "tutor": {
+        "name": "Sophia Taylor",
+        "image": "/images/pic-9.jpg",
+        "date": "28-10-2022"
+      },
+      "thumbnail": {
+        "image": "/images/thumb-8.png",
+        "videos": 18
+      },
+      "description": "Master database management with MySQL.",
+      "videos": [
+        {
+          "id": 1,
+          "title": "MySQL tutorial (part 01)",
+          "image": "/images/post-8-1.png",
+          "link": "/watch-video"
+        },
+        {
+          "id": 2,
+          "title": "MySQL tutorial (part 02)",
+          "image": "/images/post-8-2.png",
+          "link": "/watch-video"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Complete React Tutorial",
+      "tutor": {
+        "name": "Oliver Johnson",
+        "image": "/images/pic-10.jpg",
+        "date": "29-10-2022"
+      },
+      "thumbnail": {
+        "image": "/images/thumb-9.png",
+        "videos": 20
+      },
+      "description": "Learn React.js from basics to advanced concepts.",
+      "videos": [
+        {
+          "id": 1,
+          "title": "React tutorial (part 01)",
+          "image": "/images/post-9-1.png",
+          "link": "/watch-video"
+        },
+        {
+          "id": 2,
+          "title": "React tutorial (part 02)",
+          "image": "/images/post-9-2.png",
+          "link": "/watch-video"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Advanced JavaScript Techniques",
+      "tutor": {
+        "name": "Emily Davis",
+        "image": "/images/pic-11.jpg",
+        "date": "30-10-2022"
+      },
+      "thumbnail": {
+        "image": "/images/thumb-10.png",
+        "videos": 15
+      },
+      "description": "Explore advanced topics in JavaScript for better coding practices.",
+      "videos": [
+        {
+          "id": 1,
+          "title": "Advanced JS (part 01)",
+          "image": "/images/post-10-1.png",
+          "link": "/watch-video"
+        },
+        {
+          "id": 2,
+          "title": "Advanced JS (part 02)",
+          "image": "/images/post-10-2.png",
+          "link": "/watch-video"
+        }
+      ]
+    }
+  ]
+}

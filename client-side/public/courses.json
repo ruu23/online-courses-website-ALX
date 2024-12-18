@@ -1,0 +1,181 @@
+{
+  "tracks": [
+    {
+      "id": 1,
+      "name": "Web Development",
+      "image": "/images/web.jpg",
+      "courses": [
+        {
+          "id": 1,
+          "tutor": {
+            "name": "John Deo",
+            "image": "/images/pic-2.jpg",
+            "date": "21-10-2022"
+          },
+          "thumbnail": {
+            "image": "/images/thumb-1.png",
+            "videos": 10
+          },
+          "title": "Complete HTML Tutorial",
+          "link": "/playlist/1"
+        },
+        {
+          "id": 2,
+          "tutor": {
+            "name": "John Deo",
+            "image": "/images/pic-3.jpg",
+            "date": "21-10-2022"
+          },
+          "thumbnail": {
+            "image": "/images/thumb-2.png",
+            "videos": 10
+          },
+          "title": "Complete CSS Tutorial",
+          "link": "/playlist/2"
+        },
+        {
+          "id": 3,
+          "tutor": {
+            "name": "John Deo",
+            "image": "/images/pic-3.jpg",
+            "date": "21-10-2022"
+          },
+          "thumbnail": {
+            "image": "/images/thumb-3.png",
+            "videos": 10
+          },
+          "title": "Complete JS Tutorial",
+          "link": "/playlist/3"
+        },
+        {
+          "id": 4,
+          "tutor": {
+            "name": "John Deo",
+            "image": "/images/pic-3.jpg",
+            "date": "21-10-2022"
+          },
+          "thumbnail": {
+            "image": "/images/thumb-4.png",
+            "videos": 10
+          },
+          "title": "Complete Bootstrap Tutorial",
+          "link": "/playlist/4"
+        },
+        {
+          "id": 5,
+          "tutor": {
+            "name": "John Deo",
+            "image": "/images/pic-3.jpg",
+            "date": "21-10-2022"
+          },
+          "thumbnail": {
+            "image": "/images/thumb-5.png",
+            "videos": 10
+          },
+          "title": "Complete JQuery Tutorial",
+          "link": "/playlist/5"
+        },
+        {
+          "id": 6,
+          "tutor": {
+            "name": "John Deo",
+            "image": "/images/pic-3.jpg",
+            "date": "21-10-2022"
+          },
+          "thumbnail": {
+            "image": "/images/thumb-6.png",
+            "videos": 10
+          },
+          "title": "Complete SASS Tutorial",
+          "link": "/playlist/6"
+        },
+        {
+          "id": 7,
+          "tutor": {
+            "name": "John Deo",
+            "image": "/images/pic-3.jpg",
+            "date": "21-10-2022"
+          },
+          "thumbnail": {
+            "image": "/images/thumb-7.png",
+            "videos": 10
+          },
+          "title": "Complete PHP Tutorial",
+          "link": "/playlist/7"
+        },
+        {
+          "id": 8,
+          "tutor": {
+            "name": "John Deo",
+            "image": "/images/pic-3.jpg",
+            "date": "21-10-2022"
+          },
+          "thumbnail": {
+            "image": "/images/thumb-8.png",
+            "videos": 10
+          },
+          "title": "Complete MySQL Tutorial",
+          "link": "/playlist/8"
+        },
+        {
+          "id": 9,
+          "tutor": {
+            "name": "John Deo",
+            "image": "/images/pic-3.jpg",
+            "date": "21-10-2022"
+          },
+          "thumbnail": {
+            "image": "/images/thumb-9.png",
+            "videos": 10
+          },
+          "title": "Complete React Tutorial",
+          "link": "/playlist/9"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Data Analysis",
+      "image": "/images/DataAnalysis.jpg",
+      "courses": [
+        {
+          
+        }
+        
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Machine learning",
+      "image": "/images/ml.jpg",
+      "courses": [
+        {
+          
+        }
+        
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Artificial Intelligence",
+      "image": "/images/ai.jpg",
+      "courses": [
+        {
+          
+        }
+        
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Embedded",
+      "image": "/images/embedded.jpg",
+      "courses": [
+        {
+        }
+        
+      ]
+    }
+    
+  ]
+}

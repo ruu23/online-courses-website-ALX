@@ -1,0 +1,54 @@
+[
+  {
+    "user": {
+      "name": "shaikh anas",
+      "date": "22-10-2022",
+      "profileImage": "images/pic-1.jpg"
+    },
+    "comment": "this is a comment form shaikh anas",
+    "actions": [
+  { "action": "option", "label": "edit comment" },
+  { "action": "delete", "label": "delete comment" }
+]
+  },
+  {
+    "user": {
+      "name": "john deo",
+      "date": "22-10-2022",
+      "profileImage": "images/pic-2.jpg"
+    },
+    "comment": "awesome tutorial! keep going!"
+  },
+  {
+    "user": {
+      "name": "john deo",
+      "date": "22-10-2022",
+      "profileImage": "images/pic-3.jpg"
+    },
+    "comment": "amazing way of teaching! thank you so much!"
+  },
+  {
+    "user": {
+      "name": "john deo",
+      "date": "22-10-2022",
+      "profileImage": "images/pic-4.jpg"
+    },
+    "comment": "loved it, thanks for the tutorial!"
+  },
+  {
+    "user": {
+      "name": "john deo",
+      "date": "22-10-2022",
+      "profileImage": "images/pic-5.jpg"
+    },
+    "comment": "this is what I have been looking for! thank you so much!"
+  },
+  {
+    "user": {
+      "name": "john deo",
+      "date": "22-10-2022",
+      "profileImage": "images/pic-2.jpg"
+    },
+    "comment": "thanks for the tutorial! how to download source code file?"
+  }
+]
