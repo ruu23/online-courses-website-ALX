@@ -152,7 +152,7 @@ def search():
             Users.username.ilike(f"%{query}%"),
             Users.email.ilike(f"%{query}%"),
             Users.id.ilike(f"%{query}%"),
-        )
+        ).union()
     ).all()
 
     playlist_result = Playlist.query.filter(
