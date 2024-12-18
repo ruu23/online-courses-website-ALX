@@ -38,7 +38,7 @@ const Update = () => {
 
     try {
       const response = await fetch("http://localhost:5000/update-profile", {
-        method: "PUT",
+        method: "PATCH",
         body: form,
       });
 
