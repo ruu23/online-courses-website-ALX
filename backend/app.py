@@ -26,12 +26,12 @@ def get_user():
 # register
 @app.route('/register',methods=["POST"])
 def register():
-    data = request.get_json()
-    username = data.get("name")
-    email = data.get("email")
-    password = data.get("pass")
-    confirm_password = data.get("c_pass")
-    img_url = request.files['img_url']
+    # data = request.get_json() 
+    username = request.form.get("name")
+    email = request.form.get("email") 
+    password = request.form.get("pass")
+    confirm_password = request.form.get("c_pass")
+    img_url = request.files.get('profile')
 
     if not username or not email or not password or not confirm_password:
         return jsonify({'error': 'All fields are required'}), 400
@@ -42,17 +42,24 @@ def register():
     if Users.query.filter_by(username=username).first() or Users.query.filter_by(email=email).first():
         return jsonify({'error': 'Username or email already exists'}), 409
     
+    file_path = None
     if img_url:
         filename = secure_filename(img_url.filename)  
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], f"{username}_{filename}")
         img_url.save(file_path)
-    # Create and save the new user
-    user = Users(username=username, email=email, img_url=img_url)
-    user.set_password(password)
-    db.session.add(user)
-    db.session.commit()
 
-    return jsonify({'message': 'User registered successfully', 'img_url': file_path}), 201
+    try:
+        user = Users(username=username, email=email, img_url=file_path)
+        user.set_password(password)
+        
+        db.session.add(user)
+        db.session.commit()
+        
+        return jsonify({'message': 'User registered successfully'}), 201
+    
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
 
 
 # login
@@ -86,12 +93,12 @@ def update_profile(id):
         if not user:
             return jsonify({'error': 'User not found'}), 404
         
-        data = request.json
-        user.username = data.get("username")
-        user.email = data.get("email")
-        old_password = data.get("old_password")
-        new_password = data.get("new_password")
-        confirm_password = data.get("confirm_password")
+        # data = request.json
+        user.username = request.form.get("username")
+        user.email = request.form.get("email")
+        old_password = request.form.get("old_pass")
+        new_password = request.form.get("new_pass")
+        confirm_password = request.form.get("c_password")
 
         if old_password:
             if not user.check_password(old_password):
@@ -363,6 +370,7 @@ def delete_teacher(id):
 
 if __name__ == '__main__':
     with app.app_context():
+        db.drop_all()
         db.create_all()
         init_db()
 
