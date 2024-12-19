@@ -4,9 +4,9 @@ import Footer from "../Footer/Footer";
 
 const Profile = () => {
   const [userData, setUserData] = useState({
-    name: "User",
+    user_Name: "User",
     role: "Student",
-    profile: "/public/images/pic-1.jpg",
+    imgUrl: "/public/images/pic-1.jpg",
   });
 
   useEffect(() => {
@@ -34,10 +34,10 @@ const Profile = () => {
         <div className="info">
           <div className="user">
             <img
-              src={userData.profile}
+              src={userData.imgUrl}
               alt="Profile"
             />
-            <h3>{userData.name}</h3>
+            <h3>{userData.user_Name}</h3>
             <p>{userData.role}</p>
             <Link to="/update-profile" className="inline-btn">
               Update Profile
