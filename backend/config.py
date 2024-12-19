@@ -11,7 +11,7 @@ def create_app():
     
     app.config["SQLALCHEMY_DATABASE_URI"] = 'mysql+pymysql://root:1B12o202r*@localhost:3306/data'
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    app.config['UPLOAD_FOLDER'] = '/online-courses-website/backend/uploads/img_url/'
+    app.config['UPLOAD_FOLDER'] = 'static/uploads'
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     
     db.init_app(app)
