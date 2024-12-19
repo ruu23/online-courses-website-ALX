@@ -291,7 +291,7 @@ migrate = Migrate(app, db)
 
 
 # Create a new teacher
-# Teacher Section
+
 @app.route('/teachers', methods=["POST"])
 def create_teacher():
     data = request.get_json()
