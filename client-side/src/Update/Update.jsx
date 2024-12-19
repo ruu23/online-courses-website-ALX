@@ -47,7 +47,10 @@ const Update = () => {
       }
       const response = await fetch(`http://localhost:5000/update-profile?user_id=${userId}`, {
         method: "PATCH",
-        body: form,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
       });
 
       const result = await response.json();
@@ -72,6 +75,7 @@ const Update = () => {
           <input
             type="text"
             name="name"
+            value={formData.username}
             placeholder="Shaikh Anas"
             maxLength="50"
             className="box"
@@ -82,6 +86,7 @@ const Update = () => {
           <input
             type="email"
             name="email"
+            value={formData.email}
             placeholder="shaikh@gmail.com"
             maxLength="50"
             className="box"
@@ -92,6 +97,7 @@ const Update = () => {
           <input
             type="password"
             name="old_pass"
+            value={formData.old_pass}
             placeholder="Enter your old password"
             maxLength="20"
             className="box"
@@ -102,6 +108,7 @@ const Update = () => {
           <input
             type="password"
             name="new_pass"
+            value={formData.new_pass}
             placeholder="Enter your new password"
             maxLength="20"
             className="box"
@@ -112,6 +119,7 @@ const Update = () => {
           <input
             type="password"
             name="c_pass"
+            value={formData.c_pass}
             placeholder="Confirm your new password"
             maxLength="20"
             className="box"
