@@ -117,17 +117,6 @@ def update_profile(id):
         if not user:
             return jsonify({'error': 'User not found'}), 404
         
-        data = request.get_json()  # Change this to get JSON data instead of form data
-        
-        # Update basic info if provided
-        if 'username' in data:
-            user.username = data['username']
-        if 'email' in data:
-            user.email = data['email']
-            
-        # Handle password update
-        if 'old_pass' in data and data['old_pass']:
-            if not user.check_password(data['old_pass']):
         # Get form data
         username = request.form.get("username")
         email = request.form.get("email")
@@ -144,25 +133,11 @@ def update_profile(id):
         # Handle password update if old password is provided
         if old_password:
             if not user.check_password(old_password):
->>>>>>> 3cd5580ca09b5369f39b9b0785ce10e6eaeedb75
                 return jsonify({'error': 'Old password is incorrect'}), 400
-            if data['new_pass'] != data['c_pass']:
+            if new_password != confirm_password:
                 return jsonify({"error": "New password and confirm password do not match"}), 400
-            user.set_password(data['new_pass'])
+            user.set_password(new_password)
 
-
-        # Handle image update - you'll need to handle this differently if sending as base64
-        if 'img_url' in data:
-            # Assuming image is sent as base64 or URL
-            user.img_url = data['img_url']
-
-        db.session.commit()
-        
-        # Return updated user data
-        return jsonify({
-            "message": "Profile updated successfully",
-            "user": user.to_json()
-        }), 200
         # Handle profile picture upload
         if 'img_url' in request.files:
             img_url = request.files['img_url']
@@ -174,11 +149,12 @@ def update_profile(id):
 
         db.session.commit()
         return jsonify({"message": "Profile updated successfully"}), 200
->>>>>>> 3cd5580ca09b5369f39b9b0785ce10e6eaeedb75
 
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
+    
+    
 @app.route('/courses', methods=["GET"])
 def courses():
     playlists = Playlist.query.all()
