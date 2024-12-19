@@ -36,8 +36,16 @@ const Update = () => {
       form.append("profile_pic", profilePic);
     }
 
+
     try {
-      const response = await fetch("http://localhost:5000/update-profile", {
+      const userId = localStorage.getItem('user_id');
+      
+      if (!userId) {
+        // Handle case where user is not logged in
+        // Maybe redirect to login page
+        return;
+      }
+      const response = await fetch(`http://localhost:5000/update-profile?user_id=${userId}`, {
         method: "PATCH",
         body: form,
       });
