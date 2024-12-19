@@ -76,6 +76,18 @@ class Teacher(db.Model):
     img_url = db.Column(db.String(200), nullable=True)
 
     # Data into json file
+    def to_json(self):
+
+        return {
+            "id": self.id,
+            "name": self.name,
+            "email": self.email,
+            "subject": self.subject,
+            "profile_picture": self.profile_picture,
+            "bio": self.bio,
+            "subject": self.subject,
+            "imgUrl": self.img_url,
+        } 
      
 
 def init_db():
