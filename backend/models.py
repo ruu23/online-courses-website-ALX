@@ -64,7 +64,16 @@ class SavedVideo(db.Model):
     video = db.relationship('Video', backref='saved_by_users')
 
 # Teacher Section
-
+class Teacher(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(80), unique=True, nullable=False)
+    subject = db.Column(db.String(50), nullable=False)
+    profile_picture = db.Column(db.String(200), nullable=True)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    bio = db.Column(db.String(500), nullable=True)
+    subject = db.Column(db.String(100), nullable=True)
+    img_url = db.Column(db.String(200), nullable=True)
 
 
     def to_json(self):
