@@ -1,6 +1,6 @@
 from config import db
 from werkzeug.security import generate_password_hash, check_password_hash
-# Teacher Section
+
 
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -63,6 +63,7 @@ class SavedVideo(db.Model):
     user = db.relationship('Users', backref='saved_videos')
     video = db.relationship('Video', backref='saved_by_users')
 
+# Teacher Section
 class Teacher(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -73,6 +74,7 @@ class Teacher(db.Model):
     bio = db.Column(db.String(500), nullable=True)
     subject = db.Column(db.String(100), nullable=True)
     img_url = db.Column(db.String(200), nullable=True)
+
 
     def to_json(self):
 
