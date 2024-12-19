@@ -3,11 +3,11 @@ import Footer from "../Footer/Footer";
 
 const Update = () => {
   const [formData, setFormData] = useState({
-    name: "",
+    username: "",  // Changed from name to username to match backend
     email: "",
     old_pass: "",
     new_pass: "",
-    c_pass: "",
+    c_pass: "",  // Note: Backend expects c_password
   });
   const [profilePic, setProfilePic] = useState(null);
 
@@ -27,34 +27,33 @@ const Update = () => {
     e.preventDefault();
 
     const form = new FormData();
-    form.append("name", formData.name);
+    form.append("username", formData.username);
     form.append("email", formData.email);
     form.append("old_pass", formData.old_pass);
     form.append("new_pass", formData.new_pass);
-    form.append("c_pass", formData.c_pass);
+    form.append("c_password", formData.c_pass);  // Changed to match backend expectation
     if (profilePic) {
-      form.append("profile_pic", profilePic);
+      form.append("img_url", profilePic);  // Changed to match backend field name
     }
-
 
     try {
       const userId = localStorage.getItem('user_id');
       
       if (!userId) {
-        // Handle case where user is not logged in
-        // Maybe redirect to login page
+        alert("Please log in to update your profile");
         return;
       }
-      const response = await fetch(`http://localhost:5000/update-profile?user_id=${userId}`, {
+
+      const response = await fetch(`http://localhost:5000/update-profile/${userId}`, {
         method: "PATCH",
-        body: form,
+        body: form  // Remove Content-Type header to let browser set it with boundary
       });
 
       const result = await response.json();
       if (response.ok) {
         alert(result.message);
       } else {
-        alert(result.message);
+        alert(result.error || "An error occurred");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -71,7 +70,8 @@ const Update = () => {
           <p>Update Name</p>
           <input
             type="text"
-            name="name"
+            name="username"  // Changed from name to username
+            value={formData.username}
             placeholder="Shaikh Anas"
             maxLength="50"
             className="box"
@@ -82,6 +82,7 @@ const Update = () => {
           <input
             type="email"
             name="email"
+            value={formData.email}
             placeholder="shaikh@gmail.com"
             maxLength="50"
             className="box"
@@ -92,6 +93,7 @@ const Update = () => {
           <input
             type="password"
             name="old_pass"
+            value={formData.old_pass}
             placeholder="Enter your old password"
             maxLength="20"
             className="box"
@@ -102,6 +104,7 @@ const Update = () => {
           <input
             type="password"
             name="new_pass"
+            value={formData.new_pass}
             placeholder="Enter your new password"
             maxLength="20"
             className="box"
@@ -112,6 +115,7 @@ const Update = () => {
           <input
             type="password"
             name="c_pass"
+            value={formData.c_pass}
             placeholder="Confirm your new password"
             maxLength="20"
             className="box"

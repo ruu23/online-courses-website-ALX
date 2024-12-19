@@ -65,6 +65,7 @@ class SavedVideo(db.Model):
     user = db.relationship('Users', backref='saved_videos')
     video = db.relationship('Video', backref='saved_by_users')
 
+# Teacher Section
 class Teacher(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -76,6 +77,7 @@ class Teacher(db.Model):
     subject = db.Column(db.String(100), nullable=True)
     img_url = db.Column(db.String(200), nullable=True)
 
+    # Data into json file
     def to_json(self):
 
         return {
@@ -87,7 +89,8 @@ class Teacher(db.Model):
             "bio": self.bio,
             "subject": self.subject,
             "imgUrl": self.img_url,
-        }  
+        } 
+     
 
 def init_db():
     playlist_html = Playlist(title= "Complete HTML Tutorial")

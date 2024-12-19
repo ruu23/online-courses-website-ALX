@@ -128,10 +128,28 @@ def update_profile(id):
         # Handle password update
         if 'old_pass' in data and data['old_pass']:
             if not user.check_password(data['old_pass']):
+        # Get form data
+        username = request.form.get("username")
+        email = request.form.get("email")
+        old_password = request.form.get("old_pass")
+        new_password = request.form.get("new_pass")
+        confirm_password = request.form.get("c_password")
+
+        # Update basic info if provided
+        if username:
+            user.username = username
+        if email:
+            user.email = email
+
+        # Handle password update if old password is provided
+        if old_password:
+            if not user.check_password(old_password):
+>>>>>>> 3cd5580ca09b5369f39b9b0785ce10e6eaeedb75
                 return jsonify({'error': 'Old password is incorrect'}), 400
             if data['new_pass'] != data['c_pass']:
                 return jsonify({"error": "New password and confirm password do not match"}), 400
             user.set_password(data['new_pass'])
+
 
         # Handle image update - you'll need to handle this differently if sending as base64
         if 'img_url' in data:
@@ -145,11 +163,22 @@ def update_profile(id):
             "message": "Profile updated successfully",
             "user": user.to_json()
         }), 200
+        # Handle profile picture upload
+        if 'img_url' in request.files:
+            img_url = request.files['img_url']
+            if img_url.filename != '':
+                filename = secure_filename(img_url.filename) 
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], f"user_{id}_{filename}")
+                img_url.save(file_path)
+                user.img_url = file_path
+
+        db.session.commit()
+        return jsonify({"message": "Profile updated successfully"}), 200
+>>>>>>> 3cd5580ca09b5369f39b9b0785ce10e6eaeedb75
 
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
-    
 @app.route('/courses', methods=["GET"])
 def courses():
     playlists = Playlist.query.all()
@@ -317,6 +346,7 @@ def save_video(video_id):
 # Initialize Flask-Migrate
 migrate = Migrate(app, db)
 
+
 # Create a new teacher
 @app.route('/teachers', methods=["POST"])
 def create_teacher():
@@ -358,7 +388,7 @@ def get_teacher(id):
         return jsonify({"message": "Teacher not found"}), 404
     return jsonify(teacher.to_json())
 
-# Update teacher
+# Update teacher 
 @app.route('/teachers/<int:id>', methods=["PATCH"])
 def update_teacher(id):
     teacher = Teacher.query.get(id)
