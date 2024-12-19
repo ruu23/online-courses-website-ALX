@@ -289,7 +289,6 @@ def save_video(video_id):
 # Initialize Flask-Migrate
 migrate = Migrate(app, db)
 
-# Teacher Section
 
 # Create a new teacher
 @app.route('/teachers', methods=["POST"])
