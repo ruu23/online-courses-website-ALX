@@ -289,6 +289,8 @@ def save_video(video_id):
 # Initialize Flask-Migrate
 migrate = Migrate(app, db)
 
+# Teacher Section
+
 # Create a new teacher
 @app.route('/teachers', methods=["POST"])
 def create_teacher():
@@ -330,7 +332,7 @@ def get_teacher(id):
         return jsonify({"message": "Teacher not found"}), 404
     return jsonify(teacher.to_json())
 
-# Update teacher
+# Update teacher 
 @app.route('/teachers/<int:id>', methods=["PATCH"])
 def update_teacher(id):
     teacher = Teacher.query.get(id)
