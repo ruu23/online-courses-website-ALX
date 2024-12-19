@@ -8,15 +8,26 @@ const Profile = () => {
     role: "Student",
     imgUrl: "/public/images/pic-1.jpg",
   });
+  const [imgError, setImgError] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/profile");
+        const userId = localStorage.getItem('user_id');
+        
+        if (!userId) {
+          // Handle case where user is not logged in
+          // Maybe redirect to login page
+          return;
+        }
+        const response = await fetch(`http://localhost:5000/profile?user_id=${userId}`);
         if (!response.ok) {
           throw new Error(`Error: ${response.statusText}`);
         }
         const data = await response.json();
+        if (data.imgUrl && !data.imgUrl.startsWith('http')) {
+          data.imgUrl = `http://localhost:5000${data.imgUrl}`;
+        }
         setUserData(data);
       } catch (error) {
         console.error("Failed to fetch user data:", error);
@@ -33,9 +44,13 @@ const Profile = () => {
 
         <div className="info">
           <div className="user">
-            <img
-              src={userData.imgUrl}
+          <img
+              src={imgError ? "/public/images/pic-1.jpg" : userData.imgUrl}
               alt="Profile"
+              onError={(e) => {
+                setImgError(true);
+                e.target.src = "/public/images/pic-1.jpg";
+              }}
             />
             <h3>{userData.user_Name}</h3>
             <p>{userData.role}</p>

@@ -27,6 +27,9 @@ const Login = () => {
 
       const result = await response.json();
       if (response.ok) {
+        localStorage.setItem('user_id', result.user_id);
+        localStorage.setItem('username', result.username);
+        localStorage.setItem('img_url', result.img_url);
         alert(result.message);
       } else {
         alert(result.message);
