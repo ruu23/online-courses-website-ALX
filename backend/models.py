@@ -17,12 +17,14 @@ class Users(db.Model):
     
     def to_json(self):
         return {
-            "id": self.id,
-            "user_Name": self.username,
-            "imgUrl":self.img_url,
+        "id": self.id,
+        "user_Name": self.username,
+        "email": self.email,
+        "imgUrl": self.img_url if self.img_url else None,
+        "role": "Student"  # You might want to add a role field to your Users model
+    }
 
-        }
-
+    
 class Video(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), nullable=False)
