@@ -75,7 +75,7 @@ class Teacher(db.Model):
     subject = db.Column(db.String(100), nullable=True)
     img_url = db.Column(db.String(200), nullable=True)
 
-
+    # Data into json file
      
 
 def init_db():
