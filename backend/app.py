@@ -9,9 +9,13 @@ from flask import send_from_directory
 
 app = create_app()
 
+@app.route('/home')
+def home():
+    return 'Welcome to the homepage!'
 
 @app.route('/static/uploads/<path:filename>')
 def serve_image(filename):
+    app.logger.debug(f"Serving file: {filename}")
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 # get-user
 @app.route('/profile', methods=["GET"])
@@ -129,11 +133,11 @@ def update_profile(id):
         if 'old_pass' in data and data['old_pass']:
             if not user.check_password(data['old_pass']):
         # Get form data
-        username = request.form.get("username")
-        email = request.form.get("email")
-        old_password = request.form.get("old_pass")
-        new_password = request.form.get("new_pass")
-        confirm_password = request.form.get("c_password")
+                username = request.form.get("username")
+                email = request.form.get("email")
+                old_password = request.form.get("old_pass")
+                new_password = request.form.get("new_pass")
+                confirm_password = request.form.get("c_password")
 
         # Update basic info if provided
         if username:
@@ -144,7 +148,6 @@ def update_profile(id):
         # Handle password update if old password is provided
         if old_password:
             if not user.check_password(old_password):
->>>>>>> 3cd5580ca09b5369f39b9b0785ce10e6eaeedb75
                 return jsonify({'error': 'Old password is incorrect'}), 400
             if data['new_pass'] != data['c_pass']:
                 return jsonify({"error": "New password and confirm password do not match"}), 400
@@ -174,7 +177,7 @@ def update_profile(id):
 
         db.session.commit()
         return jsonify({"message": "Profile updated successfully"}), 200
->>>>>>> 3cd5580ca09b5369f39b9b0785ce10e6eaeedb75
+
 
     except Exception as e:
         db.session.rollback()
