@@ -8,7 +8,11 @@ class Users(db.Model):
     email = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(300), nullable=False)
     img_url = db.Column(db.String(200), nullable=True)
-
+    role = db.Column(db.String(50), nullable=False, default="student") 
+    
+    def __repr__(self):
+        return f"<User {self.username}, Role {self.role}>"
+    
     def set_password(self, password):
         self.password_hash =generate_password_hash(password)
 
