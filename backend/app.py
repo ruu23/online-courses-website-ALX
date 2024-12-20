@@ -52,14 +52,15 @@ def get_user():
     
 
 @app.route('/register', methods=["POST"])
-def register():
+def register_user():
     data = request.get_json()  # Get JSON data from request
 
+    # Extract user data
     username = data.get('username')
     email = data.get('email')
     password = data.get('password')
     confirm_password = data.get('confirm_password')
-    user_type = data.get('user_type', 'student')  # Default to student if not specified
+    user_type = data.get('user_type', 'student')  # Default to 'student' if not provided
     img_url = request.files.get('profile')  # Profile image upload
 
     # Validate inputs
@@ -76,6 +77,9 @@ def register():
     if Users.query.filter_by(email=email).first():
         return jsonify({'error': 'User already exists'}), 400
 
+    # Hash the password for security
+    hashed_password = generate_password_hash(password, method='sha256')
+
     # Handle profile image upload
     file_path = None
     if img_url:
@@ -86,8 +90,7 @@ def register():
 
     try:
         # Create new user with role and optional image
-        user = Users(username=username, email=email, img_url=file_path, role=user_type)
-        user.set_password(password)  # You should hash the password before saving
+        user = Users(username=username, email=email, img_url=file_path, role=user_type, password=hashed_password)
 
         # Save the new user to the database
         db.session.add(user)
@@ -98,6 +101,7 @@ def register():
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
+
 
 
 # login
@@ -379,27 +383,6 @@ def save_video(video_id):
 
 # Initialize Flask-Migrate
 migrate = Migrate(app, db)
-
-
-@app.route('/register', methods=['POST'])
-def register():
-    data = request.get_json()
-    username = data.get('username')
-    email = data.get('email')
-    password = data.get('password')
-    role = data.get('role', 'student')  # Default role is student
-
-    # Hash the password for security
-    hashed_password = generate_password_hash(password, method='sha256')
-
-    # Create the user with the appropriate role
-    new_user = Users(username=username, email=email, password=hashed_password, role=role)
-
-    db.session.add(new_user)
-    db.session.commit()
-
-    return jsonify({"message": "User registered successfully", "role": role}), 201
-
 
 
 # Create a new teacher
