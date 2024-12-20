@@ -34,6 +34,10 @@ def get_user():
     
     # Add these counts to the user data
     user_data = user.to_json()
+    if user_data['imgUrl']:
+        # Remove any leading slashes to prevent double slashes
+        img_url = user_data['imgUrl'].lstrip('/')
+        user_data['imgUrl'] = f"/static/uploads/{img_url}"
     user_data.update({
         'comments_count': comments_count,
         'likes_count': likes_count,
@@ -64,8 +68,9 @@ def register():
     file_path = None
     if img_url:
         filename = secure_filename(img_url.filename)  
-        file_path = f"/static/uploads/{username}_{filename}"
-        abs_file_path = os.path.join(app.config['UPLOAD_FOLDER'], f"{username}_{filename}")
+        file_path = f"{username}_{filename}"
+        # Save the file to the uploads directory
+        abs_file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_path)
         img_url.save(abs_file_path)
     try:
         user = Users(username=username, email=email, img_url=file_path)

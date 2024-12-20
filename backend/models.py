@@ -16,6 +16,9 @@ class Users(db.Model):
         return check_password_hash(self.password_hash,password)
     
     def to_json(self):
+        img_url = self.img_url
+        if img_url and not (img_url.startswith('/') or img_url.startswith('http')):
+            img_url = f"/{img_url}"
         return {
         "id": self.id,
         "user_Name": self.username,
