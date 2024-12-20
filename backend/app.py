@@ -10,9 +10,6 @@ from werkzeug.security import generate_password_hash
 
 app = create_app()
 
-@app.route('/home')
-def home():
-    return 'Welcome to the homepage!'
 
 @app.route('/static/uploads/<path:filename>')
 def serve_image(filename):
