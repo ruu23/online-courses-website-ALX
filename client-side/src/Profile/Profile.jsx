@@ -5,7 +5,7 @@ import Footer from "../Footer/Footer";
 const Profile = () => {
   const [userData, setUserData] = useState({
     user_Name: "User",
-    role: "Student",
+    role: "Student", // Default role, can be overwritten by backend
     imgUrl: "/public/images/pic-1.jpg",
   });
   const [imgError, setImgError] = useState(false);
@@ -28,7 +28,12 @@ const Profile = () => {
         if (data.imgUrl && !data.imgUrl.startsWith('http')) {
           data.imgUrl = `http://localhost:5000${data.imgUrl}`;
         }
-        setUserData(data);
+        // Ensure role and name are properly set
+        setUserData({
+          user_Name: data.username || "User",  // Assuming username field from backend
+          role: data.role || "Student",         // Assuming role field from backend
+          imgUrl: data.imgUrl || "/public/images/pic-1.jpg", // Default image if none provided
+        });
       } catch (error) {
         console.error("Failed to fetch user data:", error);
       }
@@ -44,7 +49,7 @@ const Profile = () => {
 
         <div className="info">
           <div className="user">
-          <img
+            <img
               src={imgError ? "/public/images/pic-1.jpg" : userData.imgUrl}
               alt="Profile"
               onError={(e) => {
@@ -53,7 +58,7 @@ const Profile = () => {
               }}
             />
             <h3>{userData.user_Name}</h3>
-            <p>{userData.role}</p>
+            <p>{userData.role}</p> {/* Displaying the role */}
             <Link to="/update-profile" className="inline-btn">
               Update Profile
             </Link>

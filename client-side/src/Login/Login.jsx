@@ -2,78 +2,79 @@ import { useState } from "react";
 import Footer from "../Footer/Footer";
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    pass: "",
-  });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
 
+    const loginData = {
+      email: email,
+      pass: password,
+    };
+
     try {
-      const response = await fetch("http://localhost:5000/login", {
+      const response = await fetch("http://localhost:5000/login", { // Make sure the URL matches your backend
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginData),
       });
 
-      const result = await response.json();
+      const data = await response.json();
       if (response.ok) {
-        localStorage.setItem('user_id', result.user_id);
-        localStorage.setItem('username', result.username);
-        localStorage.setItem('img_url', result.img_url);
-        alert(result.message);
+        alert(`Welcome, ${data.username}`);
+        // Handle successful login, store user data, redirect, etc.
+        // For example, store user ID in localStorage
+        localStorage.setItem('user_id', data.user_id);
+        // Optionally redirect to profile or home page
+        // window.location.href = "/profile"; // Or use React Router
       } else {
-        alert(result.message);
+        alert(data.message);  // Show error message
       }
     } catch (error) {
-      console.error("Error:", error);
-      alert("An error occurred. Please try again.");
+      console.error(error);
+      alert("An error occurred during login.");
     }
   };
 
   return (
-    <>
+    <div>
       <section className="form-container">
-        <form onSubmit={handleSubmit}>
-          <h3>Login Now</h3>
+        <form onSubmit={handleLoginSubmit}>
+          <h3>Login</h3>
 
           <p>Your Email <span>*</span></p>
           <input
             type="email"
-            name="email"
             placeholder="Enter your email"
             required
-            maxLength="50"
             className="box"
-            onChange={handleChange}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
 
           <p>Your Password <span>*</span></p>
           <input
             type="password"
-            name="pass"
             placeholder="Enter your password"
             required
-            maxLength="20"
             className="box"
-            onChange={handleChange}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
 
-          <input type="submit" value="Login Now" className="btn" />
+          <input
+            type="submit"
+            value="Login"
+            className="btn"
+          />
         </form>
       </section>
 
       <Footer />
-    </>
+    </div>
   );
 };
 

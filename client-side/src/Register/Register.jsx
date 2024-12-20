@@ -20,35 +20,33 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const data = new FormData();
-    data.append("name", formData.name);
-    data.append("email", formData.email);
-    data.append("pass", formData.pass);
-    data.append("c_pass", formData.c_pass);
-    data.append("profile", formData.profile);
-
+  
+    const formData = new FormData();
+    formData.append("username", username);
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("confirm_password", confirmPassword);
+    formData.append("user_type", userType);  // Add the role
+    formData.append("profile", profileImage);  // Add the profile image file
+  
     try {
-      const response = await fetch("http://localhost:5000/register", {
-          method: "POST",
-          body: data,
+      const response = await fetch("/register", {
+        method: "POST",
+        body: formData,
       });
-
-      if (!response.ok) {
-          const errorData = await response.json();
-          alert(errorData.error || 'Registration failed');
-          return;
+  
+      const data = await response.json();
+      if (response.ok) {
+        alert("Registration successful");
+      } else {
+        alert(data.error);
       }
-
-      const result = await response.json();
-      alert(result.message || 'Registration successful');
-      // Optional: Redirect to login page after successful registration
-      // window.location.href = '/login';
-  } catch (error) {
-      console.error("Error:", error);
-      alert("An error occurred. Please try again.");
-  }
-};
+    } catch (error) {
+      console.error(error);
+      alert("An error occurred");
+    }
+  };
+  
   return (
     <>
       <section className="form-container">
