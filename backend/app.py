@@ -55,6 +55,7 @@ def register():
     password = request.form.get("pass")
     confirm_password = request.form.get("c_pass")
     img_url = request.files.get('profile')
+    user_type = request.form.get('user_type', 'student')  # Default to 'student' if not provided
 
     if not username or not email or not password or not confirm_password:
         return jsonify({'error': 'All fields are required'}), 400
@@ -73,7 +74,7 @@ def register():
         abs_file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_path)
         img_url.save(abs_file_path)
     try:
-        user = Users(username=username, email=email, img_url=file_path)
+        user = Users(username=username, email=email, img_url=file_path, role=user_type)
         user.set_password(password)
         
         db.session.add(user)
@@ -127,13 +128,19 @@ def update_profile(id):
         email = request.form.get("email")
         old_password = request.form.get("old_pass")
         new_password = request.form.get("new_pass")
-        confirm_password = request.form.get("c_password")
+        confirm_password = request.form.get("c_pass")
+
+
+        if not username or not email:
+            return jsonify({'error': 'Username and email are required'}), 400
 
         # Update basic info if provided
         if username:
             user.username = username
         if email:
             user.email = email
+
+        
 
         # Handle password update if old password is provided
         if old_password:
@@ -147,13 +154,22 @@ def update_profile(id):
         if 'img_url' in request.files:
             img_url = request.files['img_url']
             if img_url.filename != '':
-                filename = secure_filename(img_url.filename) 
-                file_path = os.path.join(app.config['UPLOAD_FOLDER'], f"user_{id}_{filename}")
-                img_url.save(file_path)
+                filename = secure_filename(img_url.filename)
+                file_path = f"{username}_{filename}"  # Changed to match registration pattern
+                abs_file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_path)
+                img_url.save(abs_file_path)
                 user.img_url = file_path
 
         db.session.commit()
-        return jsonify({"message": "Profile updated successfully"}), 200
+        return jsonify({
+            "message": "Profile updated successfully",
+            "user": {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+                "imgUrl": f"/static/uploads/{user.img_url}" if user.img_url else None
+            }
+        }), 200
 
     except Exception as e:
         db.session.rollback()
