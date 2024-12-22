@@ -8,6 +8,7 @@ class Users(db.Model):
     email = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(300), nullable=False)
     img_url = db.Column(db.String(200), nullable=True)
+    role = db.Column(db.String(50), nullable=False, default="student")
 
     def set_password(self, password):
         self.password_hash =generate_password_hash(password)
@@ -16,13 +17,18 @@ class Users(db.Model):
         return check_password_hash(self.password_hash,password)
     
     def to_json(self):
+        img_url = self.img_url
+        if img_url and not (img_url.startswith('/') or img_url.startswith('http')):
+            img_url = f"/{img_url}"
         return {
-            "id": self.id,
-            "user_Name": self.username,
-            "imgUrl":self.img_url,
+        "id": self.id,
+        "user_Name": self.username,
+        "email": self.email,
+        "imgUrl": self.img_url if self.img_url else None,
+        "role": self.role  # You might want to add a role field to your Users model
+    }
 
-        }
-
+    
 class Video(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), nullable=False)
@@ -74,6 +80,7 @@ class Teacher(db.Model):
     bio = db.Column(db.String(500), nullable=True)
     subject = db.Column(db.String(100), nullable=True)
     img_url = db.Column(db.String(200), nullable=True)
+    role = db.Column(db.String(50), nullable=False, default="teacher")
 
     # Data into json file
     def to_json(self):
@@ -88,9 +95,12 @@ class Teacher(db.Model):
             "subject": self.subject,
             "imgUrl": self.img_url,
         } 
-     
+
 
 def init_db():
+    # Check if playlists already exist
+    if Playlist.query.filter_by(title="Complete HTML Tutorial").first() is not None:
+        return  # Database already initialized
     playlist_html = Playlist(title= "Complete HTML Tutorial")
     video1_html = Video(
                 title = "Complete HTML Tutorial (Part 01)",

@@ -5,24 +5,47 @@ from config import create_app, db
 from models import Users, Playlist, Video, init_db, Comment, Like, SavedVideo, Teacher
 from werkzeug.utils import secure_filename
 import os
+from flask import send_from_directory
 
 app = create_app()
 
 
+@app.route('/static/uploads/<path:filename>')
+def serve_image(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 # get-user
 @app.route('/profile', methods=["GET"])
 def get_user():
-    users = Users.query.all()
-    result = [user.to_json() for user in users]
-    comments = [{"video_id": c.video_id, "text": c.text} for c in users.comments]
-    likes = [{"video_id": l.video_id} for l in users.likes]
-    saved_videos = [{"video_id": s.video_id} for s in users.saved_videos]
-    return jsonify(result,
-        {'comments': comments,
-        'likes': likes,
-        'saved_videos': saved_videos
-        })
-
+    # You should get the user ID from the authentication token/session
+    # For now, let's assume it comes from a query parameter
+    user_id = request.args.get('user_id')
+    
+    if not user_id:
+        return jsonify({'error': 'User ID is required'}), 400
+        
+    user = Users.query.get(user_id)
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+    
+    # Get the counts for comments, likes, and saved videos
+    comments_count = Comment.query.filter_by(user_id=user.id).count()
+    likes_count = Like.query.filter_by(user_id=user.id).count()
+    saved_videos_count = SavedVideo.query.filter_by(user_id=user.id).count()
+    
+    # Add these counts to the user data
+    user_data = user.to_json()
+    if user_data['imgUrl']:
+        # Remove any leading slashes to prevent double slashes
+        img_url = user_data['imgUrl'].lstrip('/')
+        user_data['imgUrl'] = f"/static/uploads/{img_url}"
+    user_data.update({
+        'comments_count': comments_count,
+        'likes_count': likes_count,
+        'saved_videos_count': saved_videos_count
+    })
+    
+    return jsonify(user_data)
+    
 # register
 @app.route('/register',methods=["POST"])
 def register():
@@ -32,6 +55,7 @@ def register():
     password = request.form.get("pass")
     confirm_password = request.form.get("c_pass")
     img_url = request.files.get('profile')
+    user_type = request.form.get('user_type', 'student')  # Default to 'student' if not provided
 
     if not username or not email or not password or not confirm_password:
         return jsonify({'error': 'All fields are required'}), 400
@@ -45,11 +69,12 @@ def register():
     file_path = None
     if img_url:
         filename = secure_filename(img_url.filename)  
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], f"{username}_{filename}")
-        img_url.save(file_path)
-
+        file_path = f"{username}_{filename}"
+        # Save the file to the uploads directory
+        abs_file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_path)
+        img_url.save(abs_file_path)
     try:
-        user = Users(username=username, email=email, img_url=file_path)
+        user = Users(username=username, email=email, img_url=file_path, role=user_type)
         user.set_password(password)
         
         db.session.add(user)
@@ -79,7 +104,12 @@ def login():
     # check auth
     if user and user.check_password(password):
         # Authentication successful
-        return jsonify({'message': f'Welcome, {user.username}!'}), 200
+        return jsonify({
+            'message': f'Welcome, {user.username}!',
+            'user_id': user.id,
+            'username': user.username,
+            'imgUrl': user.img_url
+        }), 200
     else:
         # Authentication failed
         return jsonify({'message': 'Invalid email or password'}), 401
@@ -99,12 +129,21 @@ def update_profile(id):
         old_password = request.form.get("old_pass")
         new_password = request.form.get("new_pass")
         confirm_password = request.form.get("c_pass")
+<<<<<<< HEAD
+=======
+
+
+        if not username or not email:
+            return jsonify({'error': 'Username and email are required'}), 400
+>>>>>>> ea841a05f7ac32d56c55ecb4f5ecd06b0f87a0d7
 
         # Update basic info if provided
         if username:
             user.username = username
         if email:
             user.email = email
+
+        
 
         # Handle password update if old password is provided
         if old_password:
@@ -118,17 +157,28 @@ def update_profile(id):
         if 'img_url' in request.files:
             img_url = request.files['img_url']
             if img_url.filename != '':
-                filename = secure_filename(img_url.filename) 
-                file_path = os.path.join(app.config['UPLOAD_FOLDER'], f"user_{id}_{filename}")
-                img_url.save(file_path)
+                filename = secure_filename(img_url.filename)
+                file_path = f"{username}_{filename}"  # Changed to match registration pattern
+                abs_file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_path)
+                img_url.save(abs_file_path)
                 user.img_url = file_path
 
         db.session.commit()
-        return jsonify({"message": "Profile updated successfully"}), 200
+        return jsonify({
+            "message": "Profile updated successfully",
+            "user": {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+                "imgUrl": f"/static/uploads/{user.img_url}" if user.img_url else None
+            }
+        }), 200
 
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
+    
+    
 @app.route('/courses', methods=["GET"])
 def courses():
     playlists = Playlist.query.all()
@@ -378,7 +428,6 @@ def delete_teacher(id):
 
 if __name__ == '__main__':
     with app.app_context():
-        db.drop_all()
         db.create_all()
         init_db()
 

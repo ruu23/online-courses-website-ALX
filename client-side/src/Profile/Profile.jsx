@@ -6,7 +6,11 @@ const Profile = () => {
   const [userData, setUserData] = useState({
     user_Name: "User",
     role: "Student",
-    imgUrl: "/public/images/pic-1.jpg",
+    // imgUrl: "/public/images/pic-1.jpg",
+    imgUrl: null,
+    comments_count: 0,
+    likes_count: 0,
+    saved_videos_count: 0
   });
   const [imgError, setImgError] = useState(false);
 
@@ -16,6 +20,7 @@ const Profile = () => {
         const userId = localStorage.getItem('user_id');
         
         if (!userId) {
+          window.location.href = '/login';
           // Handle case where user is not logged in
           // Maybe redirect to login page
           return;
@@ -25,8 +30,15 @@ const Profile = () => {
           throw new Error(`Error: ${response.statusText}`);
         }
         const data = await response.json();
-        if (data.imgUrl && !data.imgUrl.startsWith('http')) {
-          data.imgUrl = `http://localhost:5000${data.imgUrl}`;
+        console.log("Received user data:", data); // Debug log
+
+        // Handle the image URL
+        if (data.imgUrl) {
+          // Remove any duplicate 'static/uploads' in the path
+          const cleanPath = data.imgUrl.replace(/\/static\/uploads\/static\/uploads\//, '/static/uploads/');
+          data.imgUrl = cleanPath.startsWith('http') 
+            ? cleanPath 
+            : `http://localhost:5000${cleanPath}`;
         }
         setUserData(data);
       } catch (error) {
@@ -64,7 +76,7 @@ const Profile = () => {
               <div className="flex">
                 <i className="fas fa-bookmark"></i>
                 <div>
-                  <span>0</span>
+                  <span>{userData.saved_videos_count}</span>
                   <p>Saved playlists</p>
                 </div>
               </div>
@@ -77,7 +89,7 @@ const Profile = () => {
               <div className="flex">
                 <i className="fas fa-heart"></i>
                 <div>
-                  <span>0</span>
+                  <span>{userData.likes_count}</span>
                   <p>Videos liked</p>
                 </div>
               </div>
@@ -90,7 +102,7 @@ const Profile = () => {
               <div className="flex">
                 <i className="fas fa-comment"></i>
                 <div>
-                  <span>0</span>
+                  <span>{userData.comments_count}</span>
                   <p>Videos commented</p>
                 </div>
               </div>
