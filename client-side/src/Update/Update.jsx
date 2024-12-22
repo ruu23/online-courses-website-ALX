@@ -3,11 +3,11 @@ import Footer from "../Footer/Footer";
 
 const Update = () => {
   const [formData, setFormData] = useState({
-    username: "",  // Changed from name to username to match backend
+    username: "",
     email: "",
     old_pass: "",
     new_pass: "",
-    c_pass: "",  // Note: Backend expects c_password
+    c_pass: "",
   });
   const [profilePic, setProfilePic] = useState(null);
 

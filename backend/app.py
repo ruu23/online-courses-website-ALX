@@ -98,7 +98,7 @@ def update_profile(id):
         email = request.form.get("email")
         old_password = request.form.get("old_pass")
         new_password = request.form.get("new_pass")
-        confirm_password = request.form.get("c_password")
+        confirm_password = request.form.get("c_pass")
 
         # Update basic info if provided
         if username:
