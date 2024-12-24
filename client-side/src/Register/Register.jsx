@@ -8,6 +8,7 @@ const Register = () => {
     pass: "",
     c_pass: "",
     profile: null,
+    role: "student", // Default role
   });
 
   const handleChange = (e) => {
@@ -27,28 +28,28 @@ const Register = () => {
     data.append("pass", formData.pass);
     data.append("c_pass", formData.c_pass);
     data.append("profile", formData.profile);
+    data.append("role", formData.role);
 
     try {
       const response = await fetch("http://localhost:5000/register", {
-          method: "POST",
-          body: data,
+        method: "POST",
+        body: data,
       });
 
       if (!response.ok) {
-          const errorData = await response.json();
-          alert(errorData.error || 'Registration failed');
-          return;
+        const errorData = await response.json();
+        alert(errorData.error || 'Registration failed');
+        return;
       }
 
       const result = await response.json();
       alert(result.message || 'Registration successful');
-      // Optional: Redirect to login page after successful registration
-      // window.location.href = '/login';
-  } catch (error) {
+    } catch (error) {
       console.error("Error:", error);
       alert("An error occurred. Please try again.");
-  }
-};
+    }
+  };
+
   return (
     <>
       <section className="form-container">
@@ -59,7 +60,7 @@ const Register = () => {
           <input
             type="text"
             name="name"
-            placeholder="Enter your name"
+            placeholder="Enter your username"
             required
             maxLength="50"
             className="box"
@@ -98,6 +99,18 @@ const Register = () => {
             className="box"
             onChange={handleChange}
           />
+
+          <p>Select Role <span>*</span></p>
+          <select
+            name="role"
+            className="box"
+            value={formData.role}
+            onChange={handleChange}
+            required
+          >
+            <option value="student">Student</option>
+            <option value="tutor">Tutor</option>
+          </select>
 
           <p>Select Profile <span>*</span></p>
           <input
