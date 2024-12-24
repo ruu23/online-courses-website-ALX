@@ -3,11 +3,11 @@ import Footer from "../Footer/Footer";
 
 const Update = () => {
   const [formData, setFormData] = useState({
-    username: "",  // Changed from name to username to match backend
+    username: "",
     email: "",
     old_pass: "",
     new_pass: "",
-    c_pass: "",  // Note: Backend expects c_password
+    c_pass: "",
   });
   const [profilePic, setProfilePic] = useState(null);
 
@@ -72,7 +72,7 @@ const Update = () => {
             type="text"
             name="username"  // Changed from name to username
             value={formData.username}
-            placeholder="Shaikh Anas"
+            placeholder="Enter your username"
             maxLength="50"
             className="box"
             onChange={handleChange}
@@ -83,7 +83,7 @@ const Update = () => {
             type="email"
             name="email"
             value={formData.email}
-            placeholder="shaikh@gmail.com"
+            placeholder="xxx@gmail.com"
             maxLength="50"
             className="box"
             onChange={handleChange}

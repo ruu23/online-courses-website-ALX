@@ -7,7 +7,31 @@ const HeaderAndSideBar = ({ onSearch }) => {
   const [profileActive, setProfileActive] = useState(false);
   const [searchActive, setSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [userData, setUserData] = useState({
+    user_Name: "shaikh anas",
+    role: "student",
+    imgUrl: "images/pic-1.jpg"
+  });
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userId = localStorage.getItem('user_id');
+      if (userId) {
+        try {
+          const response = await fetch(`http://localhost:5000/profile?user_id=${userId}`);
+          if (response.ok) {
+            const data = await response.json();
+            setUserData(data);
+          }
+        } catch (error) {
+          console.error("Failed to fetch user data:", error);
+        }
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const toggleSideBar = () => {
     setSideBarActive(!sideBarActive);
@@ -57,9 +81,9 @@ const HeaderAndSideBar = ({ onSearch }) => {
             <div id="toggle-btn" className={`fas ${darkMode ? 'fa-moon' : 'fa-sun'}`} onClick={toggleDarkMode}></div>
           </div>
           <div className={`profile ${profileActive ? 'active' : ''}`}>
-            <img src="../images/pic-1.jpg" className="image" alt="" />
-            <h3 className="name">shaikh anas</h3>
-            <p className="role">student</p>
+            <img src={userData.imgUrl} className="w-24 h-24 rounded-full object-cover mx-auto" alt="" />
+            <h3 className="name">{userData.user_Name}</h3>
+            <p className="role">{userData.role}</p>
             <Link to="/profile" className="btn">view profile</Link>
             <div className="flex-btn">
               <Link to="/login" className="option-btn">login</Link>
@@ -74,32 +98,17 @@ const HeaderAndSideBar = ({ onSearch }) => {
           <i className="fas fa-times"></i>
         </div>
         <div className="profile">
-          <img src="images/pic-1.jpg" className="image" alt="Profile" />
-          <h3 className="name">shaikh anas</h3>
-          <p className="role">student</p>
+          <img src={userData.imgUrl} className="w-24 h-24 rounded-full object-cover mx-auto" alt="Profile" />
+          <h3 className="name">{userData.user_Name}</h3>
+          <p className="role">{userData.role}</p>
           <Link to="/profile" className="btn">view profile</Link>
         </div>
         <nav className="navbar">
-          <Link to="/">
-            <i className="fas fa-home"></i>
-            <span>home</span>
-          </Link>
-          <Link to="/about">
-            <i className="fas fa-question"></i>
-            <span>about</span>
-          </Link>
-          <Link to="/courses">
-            <i className="fas fa-graduation-cap"></i>
-            <span>courses</span>
-          </Link>
-          <Link to="/teachers">
-            <i className="fas fa-chalkboard-user"></i>
-            <span>teachers</span>
-          </Link>
-          <Link to="/contact">
-            <i className="fas fa-headset"></i>
-            <span>contact us</span>
-          </Link>
+          <Link to="/"><i className="fas fa-home"></i><span>home</span></Link>
+          <Link to="/about"><i className="fas fa-question"></i><span>about</span></Link>
+          <Link to="/courses"><i className="fas fa-graduation-cap"></i><span>courses</span></Link>
+          <Link to="/teachers"><i className="fas fa-chalkboard-user"></i><span>teachers</span></Link>
+          <Link to="/contact"><i className="fas fa-headset"></i><span>contact us</span></Link>
         </nav>
       </div>
     </>
