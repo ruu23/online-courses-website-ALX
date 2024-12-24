@@ -66,6 +66,9 @@ def register():
     if Users.query.filter_by(username=username).first() or Users.query.filter_by(email=email).first():
         return jsonify({'error': 'Username or email already exists'}), 409
     
+    if user_type not in ['student', 'teacher']:
+        return jsonify({'error': 'Invalid user type'}), 400
+    
     file_path = None
     if img_url:
         filename = secure_filename(img_url.filename)  
