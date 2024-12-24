@@ -204,7 +204,7 @@ def init_db():
                 description = "Background - Attachment, Position, Size",
                 video_url = "static/videos/CSS/CSS_v6.mp4", 
                 thumbnail = "static/imgs/CSS/css-6.png", # missed
-                playlist=playlist_CSS
+                playlist=playlist_Bootstrap
     )
 
 
