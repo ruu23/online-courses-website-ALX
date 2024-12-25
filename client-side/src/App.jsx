@@ -40,14 +40,14 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/about" element={<About />} />
         <Route path="/teachers" element={<Teachers />} />
+        <Route path="/teachers/:id" element={<TeacherProfile />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/watch-video" element={<WatchVideo />} />
-        <Route path="/teacher-profile" element={<TeacherProfile />} />
         <Route path="/register" element={<Register />} />
         <Route path="/update-profile" element={<Update />} />
         <Route path="/courses" element={<Courses />} />
-        <Route path="/playlist/:id" element={<Playlist />} />
+        <Route path="/courses/:playlistId/:videoId" element={<WatchVideo />} />
+        <Route path="/courses/:playlistId" element={<Playlist />} />
         <Route path="/search" element={<SearchResults results={searchResults} />} />
       </Routes>
     </BrowserRouter>

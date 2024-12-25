@@ -8,7 +8,7 @@ const Register = () => {
     pass: "",
     c_pass: "",
     profile: null,
-    user_type: "student", // Default role
+    user_type: "", // Default role
   });
 
   const handleChange = (e) => {
@@ -102,14 +102,14 @@ const Register = () => {
 
           <p>Select Role <span>*</span></p>
           <select
-            name="role"
+            name="user_type"
             className="box"
             value={formData.user_type}
             onChange={handleChange}
             required
           >
             <option value="student">Student</option>
-            <option value="tutor">Tutor</option>
+            <option value="teacher">Teacher</option>
           </select>
 
           <p>Select Profile <span>*</span></p>
