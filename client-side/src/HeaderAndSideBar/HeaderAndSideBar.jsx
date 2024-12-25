@@ -9,7 +9,7 @@ const HeaderAndSideBar = ({ onSearch }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [userData, setUserData] = useState({
     user_Name: "shaikh anas",
-    role: "student",
+    user_type: "student",
     imgUrl: "images/pic-1.jpg"
   });
   const navigate = useNavigate();
@@ -100,7 +100,7 @@ const HeaderAndSideBar = ({ onSearch }) => {
         <div className="profile">
           <img src={userData.imgUrl} className="w-24 h-24 rounded-full object-cover mx-auto" alt="Profile" />
           <h3 className="name">{userData.user_Name}</h3>
-          <p className="role">{userData.role}</p>
+          <p className="role">{userData.user_type}</p>
           <Link to="/profile" className="btn">view profile</Link>
         </div>
         <nav className="navbar">
