@@ -31,7 +31,7 @@ const Update = () => {
     form.append("email", formData.email);
     form.append("old_pass", formData.old_pass);
     form.append("new_pass", formData.new_pass);
-    form.append("c_password", formData.c_pass);  // Changed to match backend expectation
+    form.append("c_pass", formData.c_pass);  // Changed to match backend expectation
     if (profilePic) {
       form.append("img_url", profilePic);  // Changed to match backend field name
     }
