@@ -5,7 +5,7 @@ import Footer from "../Footer/Footer";
 const Profile = () => {
   const [userData, setUserData] = useState({
     user_Name: "User",
-    role: "Student",
+    user_type: "Student",
     // imgUrl: "/public/images/pic-1.jpg",
     imgUrl: null,
     comments_count: 0,
@@ -65,7 +65,7 @@ const Profile = () => {
               }}
             />
             <h3>{userData.user_Name}</h3>
-            <p>{userData.role}</p>
+            <p>{userData.user_type}</p>
             <Link to="/update-profile" className="inline-btn">
               Update Profile
             </Link>

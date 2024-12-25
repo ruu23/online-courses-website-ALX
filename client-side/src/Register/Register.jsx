@@ -8,7 +8,7 @@ const Register = () => {
     pass: "",
     c_pass: "",
     profile: null,
-    role: "student", // Default role
+    user_type: "student", // Default role
   });
 
   const handleChange = (e) => {
@@ -28,7 +28,7 @@ const Register = () => {
     data.append("pass", formData.pass);
     data.append("c_pass", formData.c_pass);
     data.append("profile", formData.profile);
-    data.append("user_type", formData.role);
+    data.append("user_type", formData.user_type);
 
     try {
       const response = await fetch("http://localhost:5000/register", {
@@ -104,12 +104,12 @@ const Register = () => {
           <select
             name="user_type"
             className="box"
-            value={formData.role}
+            value={formData.user_type}
             onChange={handleChange}
             required
           >
             <option value="student">Student</option>
-            <option value="tutor">Tutor</option>
+            <option value="teacher">Teacher</option>
           </select>
 
           <p>Select Profile <span>*</span></p>
