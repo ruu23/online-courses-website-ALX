@@ -16,13 +16,19 @@ const Playlist = () => {
         setPlaylist(response.data);
         setLoading(false);
       } catch (err) {
-        setError(err.response?.data?.error || 'Failed to fetch playlist');
+        setError(err.response?.data?.message || 'Failed to fetch playlist');
         setLoading(false);
       }
     };
 
     fetchPlaylist();
   }, [playlistId]);
+
+  const getFullUrl = (path) => {
+    if (!path) return '';
+    if (path.startsWith('http')) return path;
+    return `http://localhost:5000/${path}`;
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -35,14 +41,12 @@ const Playlist = () => {
         <div className="row">
           <div className="column">
             <div className="thumb">
-              <img src={playlist.thumbnail} alt={playlist.title} />
               <span>{playlist.videos?.length || 0} videos</span>
             </div>
           </div>
           <div className="column">
             <div className="details">
               <h3>{playlist.title}</h3>
-              <p>{playlist.description}</p>
             </div>
           </div>
         </div>
@@ -51,20 +55,35 @@ const Playlist = () => {
       <section className="playlist-videos">
         <h1 className="heading">Playlist Videos</h1>
         <div className="box-container">
-          {playlist.videos?.map(video => (
-            <Link 
+        {playlist.videos?.map(video => (
+          <Link
               key={video.id} 
-              className="box" 
               to={`/courses/${playlistId}/${video.id}`}
+              className="box"
             >
-              <i className="fas fa-play"></i>
-              <img src={video.thumbnail} alt={video.title} />
+              <div className="video-container">
+                <video 
+                  poster={getFullUrl(video.thumbnail)}
+                  className="video"
+                >
+                  <source src={getFullUrl(video.video_url)} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+                <div className="play-button">
+                  <i className="fas fa-play"></i>
+                </div>
+              </div>
               <h3>{video.title}</h3>
+              <p>{video.description}</p>
             </Link>
-          ))}
+          ))}  
+          {playlist.videos?.length === 0 && (
+            <div className="box">
+              <p>No videos available in this playlist.</p>
+            </div>
+          )}
         </div>
       </section>
-      
       <Footer />
     </div>
   );
