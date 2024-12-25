@@ -10,7 +10,7 @@ def create_app():
     app = Flask(__name__, static_folder='static')
     CORS(app, resources={
         r"/*": {
-            "origins": ["http://localhost:5174", "http://localhost:3000"],
+            "origins": ["http://localhost:5174","http://localhost:5173", "http://localhost:3000"],
             "methods": ["GET", "POST", "PATCH", "DELETE"],
             "allow_headers": ["Content-Type"]
         }

@@ -9,6 +9,7 @@ const Register = () => {
     c_pass: "",
     profile: null,
     user_type: "", // Default role
+
   });
 
   const handleChange = (e) => {

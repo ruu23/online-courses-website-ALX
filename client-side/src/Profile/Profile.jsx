@@ -6,6 +6,7 @@ const Profile = () => {
   const [userData, setUserData] = useState({
     user_Name: "User",
     user_type: "student",
+
     // imgUrl: "/public/images/pic-1.jpg",
     imgUrl: null,
     comments_count: 0,

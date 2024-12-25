@@ -25,7 +25,7 @@ class Users(db.Model):
         "user_Name": self.username,
         "email": self.email,
         "imgUrl": self.img_url if self.img_url else None,
-        "role": self.role  # You might want to add a role field to your Users model
+        "user_type": self.role  # You might want to add a role field to your Users model
     }
 
     
