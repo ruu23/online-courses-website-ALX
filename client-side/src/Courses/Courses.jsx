@@ -71,7 +71,7 @@ export default function Courses() {
             playlists.map(playlist => (
               <div key={playlist.id} className="box">
                 <h3 className="title">{playlist.title}</h3>
-                <Link to={`/playlist/${playlist.id}`} className="inline-btn">
+                <Link to={`/courses/${playlist.id}`} className="inline-btn">
                   View Playlist
                 </Link>
               </div>

@@ -134,8 +134,10 @@ def update_profile(id):
         confirm_password = request.form.get("c_pass")
 
 
+
         if not username or not email:
             return jsonify({'error': 'Username and email are required'}), 400
+
 
         # Update basic info if provided
         if username:
@@ -192,16 +194,20 @@ def videos(playlist_id):
     playlist = Playlist.query.get(playlist_id)
 
     if not playlist:
-        return jsonify({"message" : " No playlist found"})
+        return jsonify({"message": "No playlist found"}), 404
     
     videos = Video.query.filter_by(playlist_id=playlist_id).all()
-    return jsonify([{
-        "id" : v.id,
-        "title" : v.title,
-        "description" : v.description,
-        "thumbnail" : v.thumbnail,
-        "video_url": v.video_url
-    } for v in videos])
+    return jsonify({
+        "id": playlist.id,
+        "title": playlist.title,
+        "videos": [{
+            "id": v.id,
+            "title": v.title,
+            "description": v.description,
+            "thumbnail": v.thumbnail,
+            "video_url": v.video_url
+        } for v in videos]
+    })
 
 # search bar
 @app.route('/search', methods=["GET"])
