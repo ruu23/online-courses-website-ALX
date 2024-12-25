@@ -1,119 +1,102 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 import Footer from '../Footer/Footer';
 
 const WatchVideo = () => {
-  const [commentsData, setCommentsData] = useState([]); 
+  const { playlistId, videoId } = useParams();
+  const [video, setVideo] = useState(null);
+  const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null); 
-
+  const [error, setError] = useState(null);
+  
   useEffect(() => {
-    fetch('/comments.json') // Adjust the path as necessary
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch comments data');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        // Ensure the fetched data is an array
-        if (Array.isArray(data)) {
-          setCommentsData(data);
-        } else {
-          setError('Fetched data is not an array');
-        }
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
+    fetchVideo();
+  }, [playlistId, videoId]);
+
+  const fetchVideo = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/courses/${playlistId}/${videoId}`);
+      setVideo(response.data);
+      setLoading(false);
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to fetch video');
+      setLoading(false);
+    }
+  };
+
+  const handleComment = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post(`/courses/${playlistId}/${videoId}/comment`, {
+        text: newComment
       });
-  }, []);  // Empty dependency array to run only once when the component mounts
+      setNewComment('');
+      fetchVideo();
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to add comment');
+    }
+  };
 
-  // If the data is still loading, show a loading message
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const handleLike = async () => {
+    try {
+      await axios.post(`/courses/${playlistId}/${videoId}/like`);
+      fetchVideo();
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to like video');
+    }
+  };
 
-  // If there was an error, show the error message
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  const handleSave = async () => {
+    try {
+      await axios.post(`/courses/${playlistId}/${videoId}/save`);
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to save video');
+    }
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!video) return <div>Video not found</div>;
 
   return (
     <>
-
       <section className="watch-video">
         <div className="video-container">
           <div className="video">
-            <video src="/images/vid-1.mp4" controls poster="/images/post-1-1.png" id="video"></video>
+            <video src={video.video_url} controls poster={video.thumbnail} id="video"></video>
           </div>
-          <h3 className="title">Complete HTML tutorial (part 01)</h3>
+          <h3 className="title">{video.video_title}</h3>
           <div className="info">
-            <p className="date"><i className="fas fa-calendar"></i><span>22-10-2022</span></p>
-            <p className="date"><i className="fas fa-heart"></i><span>44 likes</span></p>
+            <p className="date">
+              <i className="fas fa-calendar"></i>
+              <span>{new Date().toLocaleDateString()}</span>
+            </p>
           </div>
-          <div className="tutor">
-            <img src="/images/pic-2.jpg" alt="tutor" />
-            <div>
-              <h3>john deo</h3>
-              <span>developer</span>
-            </div>
-          </div>
-          <form action="" method="post" className="flex">
-            <Link to="/playlist" className="inline-btn">view playlist</Link>
-            <button><i className="far fa-heart"></i><span>like</span></button>
+          <form className="flex">
+            <button onClick={handleSave} type="button" className="inline-btn">Save Video</button>
+            <button onClick={handleLike} type="button">
+              <i className="far fa-heart"></i>
+              <span>Like</span>
+            </button>
           </form>
-          <p className="description">
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Itaque labore ratione, hic exercitationem mollitia obcaecati culpa dolor placeat provident porro.
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aliquid iure autem non fugit sint. A, sequi rerum architecto dolor fugiat illo, iure velit nihil laboriosam cupiditate voluptatum facere cumque nemo!
-          </p>
+          <p className="description">{video.description}</p>
         </div>
       </section>
 
       <section className="comments">
-        <h1 className="heading">5 comments</h1>
-
-        <form action="" className="add-comment">
-          <h3>add comments</h3>
-          <textarea name="comment_box" placeholder="enter your comment" required maxLength="1000" cols="30" rows="10"></textarea>
-          <input type="submit" value="add comment" className="inline-btn" name="add_comment" />
+        <h1 className="heading">Add Comment</h1>
+        <form onSubmit={handleComment} className="add-comment">
+          <textarea 
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            placeholder="Enter your comment"
+            required
+            maxLength="1000"
+            rows="10"
+          ></textarea>
+          <button type="submit" className="inline-btn">Add Comment</button>
         </form>
-
-        <h1 className="heading">User comments</h1>
-
-        <div className="box-container">
-          {/* Only map if commentsData is an array */}
-          {Array.isArray(commentsData) && commentsData.length > 0 ? (
-            commentsData.map((comment, index) => (
-              <div key={index} className="box">
-                <div className="user">
-                  <img src={comment.user.profileImage} alt="user" />
-                  <div>
-                    <h3>{comment.user.name}</h3>
-                    <span>{comment.user.date}</span>
-                  </div>
-                </div>
-                <div className="comment-box">{comment.comment}</div>
-                {comment.actions && (
-  <form action="" className="flex-btn">
-    {comment.actions.map((action, index) => (
-      <input
-        key={index}
-        type="submit"
-        value={action.label}
-        name={action.action + "_comment"}
-        className={`inline-${action.action}-btn`} // This generates the class dynamically
-      />
-    ))}
-                  </form>
-                )}
-              </div>
-            ))
-          ) : (
-            <p>No comments available</p>
-          )}
-        </div>
       </section>
 
       <Footer />
