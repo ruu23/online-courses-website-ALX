@@ -132,13 +132,10 @@ def update_profile(id):
         old_password = request.form.get("old_pass")
         new_password = request.form.get("new_pass")
         confirm_password = request.form.get("c_pass")
-<<<<<<< HEAD
-=======
 
 
         if not username or not email:
             return jsonify({'error': 'Username and email are required'}), 400
->>>>>>> ea841a05f7ac32d56c55ecb4f5ecd06b0f87a0d7
 
         # Update basic info if provided
         if username:

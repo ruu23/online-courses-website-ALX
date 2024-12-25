@@ -28,7 +28,7 @@ const Register = () => {
     data.append("pass", formData.pass);
     data.append("c_pass", formData.c_pass);
     data.append("profile", formData.profile);
-    data.append("role", formData.role);
+    data.append("user_type", formData.role);
 
     try {
       const response = await fetch("http://localhost:5000/register", {
@@ -102,7 +102,7 @@ const Register = () => {
 
           <p>Select Role <span>*</span></p>
           <select
-            name="role"
+            name="user_type"
             className="box"
             value={formData.role}
             onChange={handleChange}
