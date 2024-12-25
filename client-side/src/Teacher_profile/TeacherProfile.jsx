@@ -1,33 +1,30 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 import Footer from '../Footer/Footer';
 
 const TeacherProfile = () => {
-  const [profile, setProfile] = useState(null);
-  const [courses, setCourses] = useState([]);
+  const { id } = useParams();
+  const [teacher, setTeacher] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch profile and courses data
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchTeacher = async () => {
       try {
-        const profileResponse = await fetch(''); //http://localhost:5000/teacherProfile
-        const profileData = await profileResponse.json();
-        setProfile(profileData.profile);
-
-        const coursesResponse = await fetch('http://localhost:5000/courses');
-        const coursesData = await coursesResponse.json();
-        setCourses(coursesData.courses);
+        const { data } = await axios.get(`http://localhost:5000/teachers/${id}`);
+        setTeacher(data);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchData();
-  }, []);
+    fetchTeacher();
+  }, [id]);
 
-  if (!profile) {
-    return <p>Loading...</p>;
-  }
+  if (loading) return <p>Loading...</p>;
+  if (!teacher) return <p>Teacher not found</p>;
 
   return (
     <>
@@ -35,35 +32,30 @@ const TeacherProfile = () => {
         <div className="profile-details">
           <h1>Profile Details</h1>
           <div className="profile-info">
-            <h2>{profile.name}</h2>
-            <p>{profile.role}</p>
-          </div>
-          <ul className="stats">
-            <li>Total Playlists: {profile.totalPlaylists}</li>
-            <li>Total Videos: {profile.totalVideos}</li>
-            <li>Total Likes: {profile.totalLikes}</li>
-            <li>Total Comments: {profile.totalComments}</li>
-          </ul>
-        </div>
-      </section>
-
-      <section className="courses">
-        <h1>Our Courses</h1>
-        <div className="courses-container">
-          {courses.map((course) => (
-            <div key={course.id} className="course-card">
-              <div className="thumb">
-                <span>{course.videos} videos</span>
-              </div>
-              <h3 className="title">{course.title}</h3>
-              <Link to={`/playlist/${course.id}`} className="inline-btn">
-                View Playlist
-              </Link>
+            <img src={teacher.img_url} alt={teacher.name} className="profile-image" />
+            <div className="info">
+              <h2>{teacher.name}</h2>
+              <p>{teacher.subject}</p>
+              <p>{teacher.email}</p>
+              <p className="bio">{teacher.bio}</p>
             </div>
-          ))}
+          </div>
         </div>
       </section>
 
+      {teacher.courses && (
+        <section className="courses">
+          <h1>Courses</h1>
+          <div className="courses-container">
+            {teacher.courses.map((course) => (
+              <div key={course.id} className="course-card">
+                <h3>{course.title}</h3>
+                <p>{course.description}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
       <Footer />
     </>
   );

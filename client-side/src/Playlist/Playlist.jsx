@@ -4,65 +4,45 @@ import { useParams, Link } from 'react-router-dom';
 import Footer from '../Footer/Footer';
 
 const Playlist = () => {
-  const { id } = useParams(); // Get the playlist ID from the URL
+  const { playlistId } = useParams();
   const [playlist, setPlaylist] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios.get('')
-      .then(response => {
-        const playlists = response.data.playlists;
-        const selectedPlaylist = playlists.find(pl => pl.id === parseInt(id));
-        if (selectedPlaylist) {
-          setPlaylist(selectedPlaylist);
-        } else {
-          console.error("Playlist not found");
-        }
+    const fetchPlaylist = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/courses/${playlistId}`);
+        setPlaylist(response.data);
         setLoading(false);
-      })
-      .catch(error => {
-        console.error("Error fetching playlist data:", error);
+      } catch (err) {
+        setError(err.response?.data?.error || 'Failed to fetch playlist');
         setLoading(false);
-      });
-  }, [id]);
+      }
+    };
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
+    fetchPlaylist();
+  }, [playlistId]);
 
-  if (!playlist) {
-    return <p>Playlist not found.</p>;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!playlist) return <div>Playlist not found</div>;
 
   return (
     <div>
       <section className="playlist-details">
         <h1 className="heading">Playlist Details</h1>
-
         <div className="row">
           <div className="column">
-            <form action="" method="post" className="save-playlist">
-              <button type="submit"><i className="far fa-bookmark"></i> <span>Save Playlist</span></button>
-            </form>
             <div className="thumb">
-              <img src={playlist.thumbnail.image} alt={playlist.title} />
-              <span>{playlist.thumbnail.videos} videos</span>
+              <img src={playlist.thumbnail} alt={playlist.title} />
+              <span>{playlist.videos?.length || 0} videos</span>
             </div>
           </div>
-
           <div className="column">
-            <div className="tutor">
-              <img src={playlist.tutor.image} alt={playlist.tutor.name} />
-              <div>
-                <h3>{playlist.tutor.name}</h3>
-                <span>{playlist.tutor.date}</span>
-              </div>
-            </div>
-
             <div className="details">
               <h3>{playlist.title}</h3>
               <p>{playlist.description}</p>
-              <Link to="/teacher_profile" className="inline-btn">View Profile</Link>
             </div>
           </div>
         </div>
@@ -70,20 +50,24 @@ const Playlist = () => {
 
       <section className="playlist-videos">
         <h1 className="heading">Playlist Videos</h1>
-
         <div className="box-container">
-          {playlist.videos.map(video => (
-            <Link key={video.id} className="box" to={video.link}>
+          {playlist.videos?.map(video => (
+            <Link 
+              key={video.id} 
+              className="box" 
+              to={`/courses/${playlistId}/${video.id}`}
+            >
               <i className="fas fa-play"></i>
-              <img src={video.image} alt={video.title} />
+              <img src={video.thumbnail} alt={video.title} />
               <h3>{video.title}</h3>
             </Link>
           ))}
         </div>
       </section>
+      
       <Footer />
     </div>
   );
-}
+};
 
 export default Playlist;
