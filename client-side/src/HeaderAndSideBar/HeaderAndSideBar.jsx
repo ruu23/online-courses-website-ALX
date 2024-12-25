@@ -83,7 +83,7 @@ const HeaderAndSideBar = ({ onSearch }) => {
           <div className={`profile ${profileActive ? 'active' : ''}`}>
             <img src={userData.imgUrl} className="w-24 h-24 rounded-full object-cover mx-auto" alt="" />
             <h3 className="name">{userData.user_Name}</h3>
-            <p className="role">{userData.role}</p>
+            <p className="role">{userData.user_type}</p>
             <Link to="/profile" className="btn">view profile</Link>
             <div className="flex-btn">
               <Link to="/login" className="option-btn">login</Link>
