@@ -22,8 +22,17 @@ const HeaderAndSideBar = ({ onSearch }) => {
           const response = await fetch(`http://localhost:5000/profile?user_id=${userId}`);
           if (response.ok) {
             const data = await response.json();
+            // Handle the image URL
+            if (data.imgUrl) {
+              // Remove any duplicate 'static/uploads' in the path
+              const cleanPath = data.imgUrl.replace(/\/static\/uploads\/static\/uploads\//, '/static/uploads/');
+              data.imgUrl = cleanPath.startsWith('http') 
+                ? cleanPath 
+                : `http://localhost:5000${cleanPath}`;
+            }
             setUserData(data);
           }
+          
         } catch (error) {
           console.error("Failed to fetch user data:", error);
         }
