@@ -40,6 +40,7 @@ class Video(db.Model):
 class Playlist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), nullable=False)
+    thumbnail = db.Column(db.String(200), nullable=False)
     Videos = db.relationship('Video', backref='playlist', lazy=True)
 
 
@@ -101,7 +102,7 @@ def init_db():
     # Check if playlists already exist
     if Playlist.query.filter_by(title="Complete HTML Tutorial").first() is not None:
         return  # Database already initialized
-    playlist_html = Playlist(title= "Complete HTML Tutorial")
+    playlist_html = Playlist(title= "Complete HTML Tutorial", thumbnail="static/imgs/Html/thumb-1.png")
     video1_html = Video(
                 title = "Complete HTML Tutorial (Part 01)",
                 description = "Introduction and What I Need To Learn",
@@ -149,7 +150,7 @@ def init_db():
     db.session.add_all([video1_html, video2_html, video3_html, video4_html, video5_html, video6_html])
     db.session.commit()
 
-    playlist_CSS = Playlist(title= "Complete CSS Tutorial")
+    playlist_CSS = Playlist(title= "Complete CSS Tutorial", thumbnail= "static/imgs/CSS/thumb-2.png")
     video1_CSS = Video(
                 title = "Complete CSS Tutorial (Part 01)",
                 description = " Introduction And What I Need To Learn",
