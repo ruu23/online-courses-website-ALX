@@ -8,7 +8,7 @@ const Register = () => {
     pass: "",
     c_pass: "",
     profile: null,
-    user_type: "", // Default role
+    user_type: "",
 
   });
 
@@ -44,6 +44,25 @@ const Register = () => {
       }
 
       const result = await response.json();
+      if (result.id) {
+        localStorage.setItem('user_id', result.id);
+        // Store user data for immediate display
+        const userData = {
+          user_Name: formData.name,
+          user_type: formData.user_type,
+          email: formData.email,
+          imgUrl: result.imgUrl || 'images/pic-1.jpg'
+        };
+        localStorage.setItem('userData', JSON.stringify(userData));
+        
+        // Redirect based on role
+        if (formData.user_type === 'teacher') {
+          // For teachers, redirect to their specific profile
+          window.location.href = `/teacher-profile/${result.id}`;
+        } else {
+          window.location.href = '/'; // Home page for students
+        }
+      }
       alert(result.message || 'Registration successful');
     } catch (error) {
       console.error("Error:", error);
@@ -61,7 +80,7 @@ const Register = () => {
           <input
             type="text"
             name="name"
-            placeholder="Enter your username"
+            placeholder="Enter your name"
             required
             maxLength="50"
             className="box"
@@ -101,17 +120,22 @@ const Register = () => {
             onChange={handleChange}
           />
 
-          <p>Select Role <span>*</span></p>
-          <select
-            name="user_type"
-            className="box"
-            value={formData.user_type}
-            onChange={handleChange}
-            required
-          >
-            <option value="student">Student</option>
-            <option value="teacher">Teacher</option>
-          </select>
+          <div className="flex">
+            <div className="box">
+              <p>Select your role <span>*</span></p>
+              <select 
+                name="user_type" 
+                className="select" 
+                required
+                value={formData.user_type}
+                onChange={handleChange}
+              >
+                <option value="" disabled selected>Select your role</option>
+                <option value="student">student</option>
+                <option value="teacher">teacher</option>
+              </select>
+            </div>
+          </div>
 
           <p>Select Profile <span>*</span></p>
           <input

@@ -3,14 +3,27 @@ import { useState, useEffect } from 'react';
 
 const HeaderAndSideBar = ({ onSearch }) => {
   const [sideBarActive, setSideBarActive] = useState(false);
-  const [darkMode, setDarkMode] = useState(localStorage.getItem('dark-mode') === 'enabled');
+  const [darkMode, setDarkMode] = useState(() => {
+    // Check if there's a stored preference
+    const storedMode = localStorage.getItem('dark-mode');
+    if (storedMode) {
+      return storedMode === 'enabled';
+    }
+    
+    // Check if it's nighttime (between 6 PM and 6 AM)
+    const currentHour = new Date().getHours();
+    return currentHour >= 18 || currentHour < 6;
+  });
   const [profileActive, setProfileActive] = useState(false);
   const [searchActive, setSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [userData, setUserData] = useState({
-    user_Name: "shaikh anas",
-    user_type: "student",
-    imgUrl: "images/pic-1.jpg"
+  const [userData, setUserData] = useState(() => {
+    const storedData = localStorage.getItem('userData');
+    return storedData ? JSON.parse(storedData) : {
+      user_Name: "user name",
+      user_type: "student",
+      imgUrl: "images/pic-1.jpg"
+    };
   });
   const navigate = useNavigate();
 
@@ -22,17 +35,16 @@ const HeaderAndSideBar = ({ onSearch }) => {
           const response = await fetch(`http://localhost:5000/profile?user_id=${userId}`);
           if (response.ok) {
             const data = await response.json();
-            // Handle the image URL
             if (data.imgUrl) {
-              // Remove any duplicate 'static/uploads' in the path
               const cleanPath = data.imgUrl.replace(/\/static\/uploads\/static\/uploads\//, '/static/uploads/');
               data.imgUrl = cleanPath.startsWith('http') 
                 ? cleanPath 
                 : `http://localhost:5000${cleanPath}`;
             }
             setUserData(data);
+            // Update localStorage with latest data
+            localStorage.setItem('userData', JSON.stringify(data));
           }
-          
         } catch (error) {
           console.error("Failed to fetch user data:", error);
         }
@@ -42,10 +54,37 @@ const HeaderAndSideBar = ({ onSearch }) => {
     fetchUserData();
   }, []);
 
-  const toggleSideBar = () => {
-    setSideBarActive(!sideBarActive);
-    document.body.classList.toggle('active', !sideBarActive);
-  };
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const storedData = localStorage.getItem('userData');
+      if (storedData) {
+        setUserData(JSON.parse(storedData));
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  useEffect(() => {
+    const checkTime = () => {
+      const currentHour = new Date().getHours();
+      const isNightTime = currentHour >= 18 || currentHour < 6;
+      
+      // Only change if user hasn't manually set a preference
+      if (!localStorage.getItem('dark-mode-manual')) {
+        setDarkMode(isNightTime);
+      }
+    };
+
+    // Check every minute
+    const interval = setInterval(checkTime, 60000);
+    
+    // Initial check
+    checkTime();
+
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     if (darkMode) {
@@ -56,7 +95,14 @@ const HeaderAndSideBar = ({ onSearch }) => {
     localStorage.setItem('dark-mode', darkMode ? 'enabled' : 'disabled');
   }, [darkMode]);
 
+  const toggleSideBar = () => {
+    setSideBarActive(!sideBarActive);
+    document.body.classList.toggle('active', !sideBarActive);
+  };
+
   const toggleDarkMode = () => {
+    // When user manually toggles, store this preference
+    localStorage.setItem('dark-mode-manual', 'true');
     setDarkMode(!darkMode);
   };
 

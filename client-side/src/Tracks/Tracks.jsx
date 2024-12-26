@@ -39,9 +39,9 @@ const Tracks = () => {
               <img src={track.image} alt={track.name} />
             </div>
             <h3 className="title">{track.name}</h3>
-            <Link to={`/courses/${track.id}`} className="inline-btn">
+            {/*<Link to={`/courses/${track.id}`} className="inline-btn">
               View Courses
-            </Link>
+            </Link>*/}
           </div>
         ))}
       </div>

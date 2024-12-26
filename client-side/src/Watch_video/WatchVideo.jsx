@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import Footer from '../Footer/Footer';
+import './WatchVideo.css';
 
 const WatchVideo = () => {
   const { playlistId, videoId } = useParams();

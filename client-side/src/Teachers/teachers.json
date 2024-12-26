@@ -1,0 +1,58 @@
+{
+  "teachers": [
+    {
+      "_id": "1",
+      "user_Name": "john deo",
+      "user_type": "developer",
+      "imgUrl": "/images/pic-2.jpg",
+      "playlists_count": 4,
+      "videos_count": 18,
+      "likes_count": 1208
+    },
+    {
+      "_id": "2",
+      "user_Name": "john deo",
+      "user_type": "developer",
+      "imgUrl": "/images/pic-3.jpg",
+      "playlists_count": 4,
+      "videos_count": 18,
+      "likes_count": 1208
+    },
+    {
+      "_id": "3",
+      "user_Name": "john deo",
+      "user_type": "developer",
+      "imgUrl": "/images/pic-4.jpg",
+      "playlists_count": 4,
+      "videos_count": 18,
+      "likes_count": 1208
+    },
+    {
+      "_id": "4",
+      "user_Name": "john deo",
+      "user_type": "developer",
+      "imgUrl": "/images/pic-5.jpg",
+      "playlists_count": 4,
+      "videos_count": 18,
+      "likes_count": 1208
+    },
+    {
+      "_id": "5",
+      "user_Name": "john deo",
+      "user_type": "developer",
+      "imgUrl": "/images/pic-6.jpg",
+      "playlists_count": 4,
+      "videos_count": 18,
+      "likes_count": 1208
+    },
+    {
+      "_id": "6",
+      "user_Name": "john deo",
+      "user_type": "developer",
+      "imgUrl": "/images/pic-7.jpg",
+      "playlists_count": 4,
+      "videos_count": 18,
+      "likes_count": 1208
+    }
+  ]
+}
