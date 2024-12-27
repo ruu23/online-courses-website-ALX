@@ -1,5 +1,6 @@
 from config import db
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 
 
 class Users(db.Model):
@@ -50,6 +51,7 @@ class Comment(db.Model):
     text = db.Column(db.String(300), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     video_id = db.Column(db.Integer, db.ForeignKey('video.id'), nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     user = db.relationship('Users', backref='comments') # backref will create a new column in the class Users named comments
     video = db.relationship('Video', backref='comments') # backref will create a new column in the class Video named comments
@@ -113,7 +115,7 @@ def init_db():
     video2_html = Video(
                 title = "Complete HTML Tutorial (Part 02)",
                 description = "Elements And Browser",
-                video_url = "static/videos/Html_v2.mp4", 
+                video_url = "static/videos/Html/Html_v2.mp4", 
                 thumbnail = "static/imgs/Html/html-2.png",
                 playlist=playlist_html
     )

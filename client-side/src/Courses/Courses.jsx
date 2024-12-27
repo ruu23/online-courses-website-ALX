@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../Footer/Footer';
 import Tracks from '../Tracks/Tracks';
+import './Courses.css';
 
 export default function Courses() {
   const [playlists, setPlaylists] = useState([]);
@@ -70,6 +71,15 @@ export default function Courses() {
           ) : (
             playlists.map(playlist => (
               <div key={playlist.id} className="box">
+                <img 
+                  src={`http://localhost:5000/${playlist.thumbnail}`} 
+                  alt={playlist.title} 
+                  className="thumbnail" 
+                  onError={(e) => {
+                    e.target.src = '/placeholder-course.png'; // Add a placeholder image
+                    e.target.onerror = null; // Prevent infinite loop
+                  }}
+                />
                 <h3 className="title">{playlist.title}</h3>
                 <Link to={`/courses/${playlist.id}`} className="inline-btn">
                   View Playlist

@@ -14,10 +14,9 @@ const WatchVideo = () => {
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
-  
+
   useEffect(() => {
     fetchVideo();
-    fetchComments();
   }, [playlistId, videoId]);
 
   const getFullUrl = (path) => {
@@ -30,6 +29,7 @@ const WatchVideo = () => {
     try {
       const response = await axios.get(`http://localhost:5000/courses/${playlistId}/${videoId}`);
       setVideo(response.data);
+      setComments(response.data.comments || []);
       setIsLiked(response.data.is_liked);
       setIsSaved(response.data.is_saved);
       setLikeCount(response.data.like_count);
@@ -40,132 +40,178 @@ const WatchVideo = () => {
     }
   };
 
-  const fetchComments = async () => {
-    try {
-      const response = await axios.get(`http://localhost:5000/courses/${playlistId}/${videoId}/comments`);
-      setComments(response.data);
-    } catch (err) {
-      console.error('Failed to fetch comments:', err);
-    }
-  };
-
   const handleComment = async (e) => {
     e.preventDefault();
+    
+    // Get user from localStorage
+    const user = JSON.parse(localStorage.getItem('user_id'));
+    
+    if (!user) {
+      setError('Please log in to comment');
+      return;
+    }
+
+    if (!newComment.trim()) return;
+
     try {
-      await axios.post(`http://localhost:5000/courses/${playlistId}/${videoId}/comment`, {
-        text: newComment
+      const response = await axios.post(`http://localhost:5000/courses/${playlistId}/${videoId}/comment`, {
+        text: newComment.trim(),
+        user_id: user.user_id // Match the backend expectation
       });
+      
+      // Create new comment object
+      const newCommentData = {
+        id: response.data.id,
+        text: response.data.text,
+        user_id: user.user_id,
+        username: user.username,
+        created_at: new Date().toISOString()
+      };
+      
+      setComments(prevComments => [...prevComments, newCommentData]);
       setNewComment('');
-      fetchComments(); // Refresh comments after posting
+      setError(null);
     } catch (err) {
+      console.error('Comment error:', err);
       setError(err.response?.data?.message || 'Failed to add comment');
     }
   };
 
   const handleLike = async () => {
+    const user = JSON.parse(localStorage.getItem('user_id'));
+    if (!user) {
+      setError('Please log in to like videos');
+      return;
+    }
+
     try {
-      const response = await axios.post(`http://localhost:5000/courses/${playlistId}/${videoId}/like`);
+      const response = await axios.post(`http://localhost:5000/courses/${playlistId}/${videoId}/like`, {
+        user_id: user.user_id
+      });
       setIsLiked(response.data.is_liked);
       setLikeCount(response.data.like_count);
+      setError(null);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to like video');
     }
   };
 
   const handleSave = async () => {
+    const user = JSON.parse(localStorage.getItem('user_id'));
+    if (!user) {
+      setError('Please log in to save videos');
+      return;
+    }
+
     try {
-      const response = await axios.post(`http://localhost:5000/courses/${playlistId}/${videoId}/save`);
+      const response = await axios.post(`http://localhost:5000/courses/${playlistId}/${videoId}/save`, {
+        user_id: user.user_id
+      });
       setIsSaved(response.data.is_saved);
+      setError(null);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to save video');
     }
   };
 
   if (loading) return <div className="loading">Loading...</div>;
-  if (error) return <div className="error">Error: {error}</div>;
+  if (error) return <div className="error">{error}</div>;
   if (!video) return <div className="error">Video not found</div>;
 
   return (
     <div className="watch-page">
       <section className="watch-video">
+        {/* Video Navigation */}
         <div className="video-details">
           <nav className="nav">
             <Link to={`/courses/${playlistId}`} className="back-btn">
               <i className="fas fa-arrow-left"></i> Back to Playlist
             </Link>
           </nav>
-          <h1 className="title">{video.title}</h1>
+          <h1 className="title">{video.video_title}</h1>
+          <p className="description">{video.description}</p>
         </div>
 
+        {/* Video Player */}
         <div className="video-container">
           <video 
+            src={getFullUrl(video.video_url)} 
             controls 
             autoPlay
-            poster={getFullUrl(video.thumbnail)}
-            className="main-video"
+            className="video"
+          ></video>
+        </div>
+
+        {/* Error Display */}
+        {error && (
+          <div className="error-message">{error}</div>
+        )}
+
+        {/* Video Actions */}
+        <div className="video-actions">
+          <button 
+            className={`like-btn ${isLiked ? 'active' : ''}`} 
+            onClick={handleLike}
           >
-            <source src={getFullUrl(video.video_url)} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        </div>
-
-        <div className="video-info">
-          <div className="video-actions">
-            <button 
-              onClick={handleLike} 
-              className={`action-btn ${isLiked ? 'liked' : ''}`}
-            >
-              <i className={`fas fa-heart ${isLiked ? 'active' : ''}`}></i>
-              <span>{likeCount} {likeCount === 1 ? 'Like' : 'Likes'}</span>
-            </button>
-            <button 
-              onClick={handleSave} 
-              className={`action-btn ${isSaved ? 'saved' : ''}`}
-            >
-              <i className={`fas fa-bookmark ${isSaved ? 'active' : ''}`}></i>
-              <span>{isSaved ? 'Saved' : 'Save'}</span>
-            </button>
-          </div>
-          
-          <div className="description">
-            <h3>Description:</h3>
-            <p>{video.description}</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="comments-section">
-        <h2 className="section-title">Comments</h2>
-        <form onSubmit={handleComment} className="comment-form">
-          <textarea
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            placeholder="Add a comment..."
-            required
-            maxLength="1000"
-            rows="3"
-          ></textarea>
-          <button type="submit" className="submit-btn">
-            Post Comment
+            <i className={`fas fa-thumbs-up ${isLiked ? 'active' : ''}`}></i>
+            <span>{likeCount} {likeCount === 1 ? 'Like' : 'Likes'}</span>
           </button>
-        </form>
 
-        <div className="comments-list">
-          {comments.length === 0 ? (
-            <p className="no-comments">No comments yet. Be the first to comment!</p>
-          ) : (
-            comments.map(comment => (
-              <div key={comment.id} className="comment">
-                <div className="comment-header">
-                  <span className="username">{comment.username}</span>
-                  <span className="date">
-                    {new Date(comment.created_at).toLocaleDateString()}
-                  </span>
+          <button 
+            className={`save-btn ${isSaved ? 'active' : ''}`} 
+            onClick={handleSave}
+          >
+            <i className={`fas fa-bookmark ${isSaved ? 'active' : ''}`}></i>
+            {isSaved ? 'Saved' : 'Save'}
+          </button>
+        </div>
+
+        {/* Comments Section */}
+        <div className="comments-section">
+          <h3>Comments</h3>
+          
+          {/* Comment Form */}
+          <form onSubmit={handleComment} className="comment-form">
+            <textarea
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder="Add a comment..."
+              required
+              className="comment-input"
+            />
+            <button 
+              type="submit" 
+              disabled={!newComment.trim()}
+              className="comment-submit"
+            >
+              Add Comment
+            </button>
+          </form>
+
+          {/* Comments List */}
+          <div className="comments-list">
+            {comments.length === 0 ? (
+              <p className="no-comments">No comments yet. Be the first to comment!</p>
+            ) : (
+              comments.map((comment) => (
+                <div key={comment.id} className="comment">
+                  <div className="comment-header">
+                    <strong>{comment.username || `User ${comment.user_id}`}</strong>
+                    <span className="comment-date">
+                      {new Date(comment.created_at).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </span>
+                  </div>
+                  <p className="comment-text">{comment.text}</p>
                 </div>
-                <p className="comment-text">{comment.text}</p>
-              </div>
-            ))
-          )}
+              ))
+            )}
+          </div>
         </div>
       </section>
       <Footer />
