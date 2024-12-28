@@ -6,13 +6,22 @@ from models import Users, Playlist, Video, init_db, Comment, Like, SavedVideo, T
 from werkzeug.utils import secure_filename
 import os
 from flask import send_from_directory
+from datetime import datetime
 
 app = create_app()
 
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    return send_from_directory('static', filename)
 
-@app.route('/static/uploads/<path:filename>')
+@app.route('/static/videos/<path:filename>')
+def serve_video(filename):
+    return send_from_directory('static/videos', filename)
+
+@app.route('/static/imgs/<path:filename>')
 def serve_image(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    return send_from_directory('static/imgs', filename)
+
 # get-user
 @app.route('/profile', methods=["GET"])
 def get_user():
@@ -187,6 +196,7 @@ def courses():
     return jsonify([{
         "id" : p.id,
         "title": p.title,
+        "thumbnail": p.thumbnail
     } for p in playlists])
 
 @app.route('/courses/<int:playlist_id>', methods=["GET"])
@@ -257,14 +267,30 @@ def search():
 @app.route('/courses/<int:playlist_id>/<int:video_id>', methods=['GET'])
 def get_video(playlist_id, video_id):
     playlist = Playlist.query.get(playlist_id)
-
     if not playlist:
-        return jsonify({"error": "Playlist not found"}), 400
-    video = Video.query.filter_by(id = video_id, playlist_id= playlist_id).first()
+        return jsonify({"error": "Playlist not found"}), 404
 
+    video = Video.query.filter_by(id=video_id, playlist_id=playlist_id).first()
     if not video:
         return jsonify({"error": "Video not found in this playlist"}), 404
-    
+
+    # Get comments with user information
+    comments_query = db.session.query(
+        Comment, Users.username
+    ).join(
+        Users, Comment.user_id == Users.id
+    ).filter(
+        Comment.video_id == video_id
+    ).all()
+
+    comments = [{
+        'id': comment.id,
+        'text': comment.text,
+        'user_id': comment.user_id,
+        'username': username,
+        'created_at': comment.created_at.isoformat()
+    } for comment, username in comments_query]
+
     return jsonify({
         "playlist_id": playlist.id,
         "playlist_title": playlist.title,
@@ -272,82 +298,127 @@ def get_video(playlist_id, video_id):
         "video_title": video.title,
         "description": video.description,
         "video_url": video.video_url,
-        "thumbnail": video.thumbnail
+        "thumbnail": video.thumbnail,
+        "comments": comments
     })
 
 
 @app.route('/courses/<int:playlist_id>/<int:video_id>/comment', methods=['POST'])
-def comments(playlist_id, video_id):
-    data = request.json
-    user_id = data.get('user_id')
-    video_id = data.get('video_id')
-    comment_text = data.get('text')
+def add_comment(playlist_id, video_id):
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
 
-    playlist = Playlist.query.get(playlist_id)
-    if not playlist:
-        return jsonify({"error": "Playlist not found"}), 400
+        user_id = data.get('user_id')
+        comment_text = data.get('text')
 
-    if not user_id:
-        return jsonify({"error": " user ID require"})
-    video = Video.query.get(video_id)
-    if not video:
-        return jsonify({'error': 'Video not found'}), 404
+        if not user_id:
+            return jsonify({"error": "User ID is required"}), 400
+        if not comment_text or not comment_text.strip():
+            return jsonify({"error": "Comment text is required"}), 400
 
-    comment = Comment(text=comment_text, user_id= user_id, video_id=video_id)
+        # Verify the video exists in this playlist
+        video = Video.query.filter_by(id=video_id, playlist_id=playlist_id).first()
+        if not video:
+            return jsonify({'error': 'Video not found in this playlist'}), 404
 
-    db.session.add(comment)
-    db.session.commit()
-    return jsonify({'message': 'Comment added successfully!'}), 201
+        # Get user information first to verify user exists
+        user = Users.query.get(user_id)
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+
+        # Create new comment
+        comment = Comment(
+            text=comment_text.strip(),
+            user_id=user_id,
+            video_id=video_id,
+            created_at=datetime.utcnow()
+        )
+        db.session.add(comment)
+        db.session.commit()
+
+        # Return the created comment with user info
+        return jsonify({
+            'id': comment.id,
+            'text': comment.text,
+            'user_id': user.id,
+            'username': user.username,
+            'created_at': comment.created_at.isoformat(),
+            'message': 'Comment added successfully'
+        }), 201
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/courses/<int:playlist_id>/<int:video_id>/like', methods = ['POST'])
 def like_video(playlist_id, video_id):
     data = request.json
     user_id = data.get('user_id')
-    video_id = data.get('video_id')
-
-    playlist = Playlist.query.get(playlist_id)
-    if not playlist:
-        return jsonify({"error": "Playlist not found"}), 400
 
     if not user_id:
-        return jsonify({"error": " user ID require"})
-    video = Video.query.get(video_id)
+        return jsonify({"error": "User ID is required"}), 400
+
+    # Verify the video exists in this playlist
+    video = Video.query.filter_by(id=video_id, playlist_id=playlist_id).first()
     if not video:
-        return jsonify({'error': 'Video not found'}), 404
+        return jsonify({'error': 'Video not found in this playlist'}), 404
     
-    # chick if liked before
+    # Check if liked before
     existing_like = Like.query.filter_by(user_id=user_id, video_id=video_id).first()
     if existing_like:
-        return jsonify({'error': 'You already liked this video'}), 400
+        # Unlike the video if already liked
+        db.session.delete(existing_like)
+        db.session.commit()
+        return jsonify({
+            'message': 'Video unliked successfully!',
+            'is_liked': False,
+            'like_count': Like.query.filter_by(video_id=video_id).count()
+        }), 200
 
     like = Like(video_id=video_id, user_id=user_id)
     db.session.add(like)
     db.session.commit()
 
-    return jsonify({'message': 'Video liked successfully!'}), 201
+    return jsonify({
+        'message': 'Video liked successfully!',
+        'is_liked': True,
+        'like_count': Like.query.filter_by(video_id=video_id).count()
+    }), 201
 
 @app.route('/courses/<int:playlist_id>/<int:video_id>/save', methods = ['POST'])
-def save_video(video_id):
+def save_video(playlist_id, video_id):
     data = request.json
     user_id = data.get('user_id')
 
     if not user_id:
         return jsonify({'error': 'User ID is required'}), 400
 
-    video = Video.query.get(video_id)
+    # Verify the video exists in this playlist
+    video = Video.query.filter_by(id=video_id, playlist_id=playlist_id).first()
     if not video:
-        return jsonify({'error': 'Video not found'}), 404
+        return jsonify({'error': 'Video not found in this playlist'}), 404
 
     # Check if video is already saved
     existing_save = SavedVideo.query.filter_by(video_id=video_id, user_id=user_id).first()
     if existing_save:
-        return jsonify({'error': 'You already saved this video'}), 400
+        # Unsave the video if already saved
+        db.session.delete(existing_save)
+        db.session.commit()
+        return jsonify({
+            'message': 'Video unsaved successfully!',
+            'is_saved': False
+        }), 200
 
     saved_video = SavedVideo(video_id=video_id, user_id=user_id)
     db.session.add(saved_video)
     db.session.commit()
 
-    return jsonify({'message': 'Video saved successfully!'}), 201
+    return jsonify({
+        'message': 'Video saved successfully!',
+        'is_saved': True
+    }), 201
 
 # Initialize Flask-Migrate
 migrate = Migrate(app, db)

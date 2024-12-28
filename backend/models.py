@@ -1,5 +1,6 @@
 from config import db
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 
 
 class Users(db.Model):
@@ -40,6 +41,7 @@ class Video(db.Model):
 class Playlist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), nullable=False)
+    thumbnail = db.Column(db.String(200), nullable=False)
     Videos = db.relationship('Video', backref='playlist', lazy=True)
 
 
@@ -49,6 +51,7 @@ class Comment(db.Model):
     text = db.Column(db.String(300), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     video_id = db.Column(db.Integer, db.ForeignKey('video.id'), nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     user = db.relationship('Users', backref='comments') # backref will create a new column in the class Users named comments
     video = db.relationship('Video', backref='comments') # backref will create a new column in the class Video named comments
@@ -101,7 +104,7 @@ def init_db():
     # Check if playlists already exist
     if Playlist.query.filter_by(title="Complete HTML Tutorial").first() is not None:
         return  # Database already initialized
-    playlist_html = Playlist(title= "Complete HTML Tutorial")
+    playlist_html = Playlist(title= "Complete HTML Tutorial", thumbnail="static/imgs/Html/thumb-1.png")
     video1_html = Video(
                 title = "Complete HTML Tutorial (Part 01)",
                 description = "Introduction and What I Need To Learn",
@@ -112,7 +115,7 @@ def init_db():
     video2_html = Video(
                 title = "Complete HTML Tutorial (Part 02)",
                 description = "Elements And Browser",
-                video_url = "static/videos/Html_v2.mp4", 
+                video_url = "static/videos/Html/Html_v2.mp4", 
                 thumbnail = "static/imgs/Html/html-2.png",
                 playlist=playlist_html
     )
@@ -149,7 +152,7 @@ def init_db():
     db.session.add_all([video1_html, video2_html, video3_html, video4_html, video5_html, video6_html])
     db.session.commit()
 
-    playlist_CSS = Playlist(title= "Complete CSS Tutorial")
+    playlist_CSS = Playlist(title= "Complete CSS Tutorial", thumbnail= "static/imgs/CSS/thumb-2.png")
     video1_CSS = Video(
                 title = "Complete CSS Tutorial (Part 01)",
                 description = " Introduction And What I Need To Learn",
