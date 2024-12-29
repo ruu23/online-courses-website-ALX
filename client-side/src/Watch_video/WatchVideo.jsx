@@ -42,38 +42,49 @@ const WatchVideo = () => {
 
   const handleComment = async (e) => {
     e.preventDefault();
+    setError(null); // Clear any previous errors
     
     // Get user from localStorage
-    const user = JSON.parse(localStorage.getItem('user_id'));
-    
-    if (!user) {
+    const userData = localStorage.getItem('user_id');
+    if (!userData) {
       setError('Please log in to comment');
       return;
     }
 
-    if (!newComment.trim()) return;
+    const user = JSON.parse(userData);
+    if (!newComment.trim()) {
+      setError('Comment cannot be empty');
+      return;
+    }
 
     try {
-      const response = await axios.post(`http://localhost:5000/courses/${playlistId}/${videoId}/comment`, {
-        text: newComment.trim(),
-        user_id: user.user_id // Match the backend expectation
-      });
+      const response = await axios.post(
+        `http://localhost:5000/courses/${playlistId}/${videoId}/comment`,
+        {
+          text: newComment.trim(),
+          user_id: user.user_id
+        }
+      );
       
-      // Create new comment object
-      const newCommentData = {
-        id: response.data.id,
-        text: response.data.text,
-        user_id: user.user_id,
-        username: user.username,
-        created_at: new Date().toISOString()
-      };
+      // Add the new comment to the list
+      const commentData = response.data;
+      setComments(prevComments => [
+        ...prevComments,
+        {
+          id: commentData.id,
+          text: commentData.text,
+          user_id: commentData.user_id,
+          username: commentData.username,
+          created_at: commentData.created_at
+        }
+      ]);
       
-      setComments(prevComments => [...prevComments, newCommentData]);
+      // Clear the input and any errors
       setNewComment('');
       setError(null);
     } catch (err) {
       console.error('Comment error:', err);
-      setError(err.response?.data?.message || 'Failed to add comment');
+      setError(err.response?.data?.error || 'Failed to add comment');
     }
   };
 
