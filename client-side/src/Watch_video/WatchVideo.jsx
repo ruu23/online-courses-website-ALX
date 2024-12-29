@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import Footer from '../Footer/Footer';
+import '../App.css';
 
 const WatchVideo = () => {
   const { playlistId, videoId } = useParams();
@@ -116,55 +117,62 @@ const WatchVideo = () => {
   return (
     <div>
       <section className="watch-video">
-        <div className="video-details">
-          <nav className="video-nav">
-            <Link to={`/courses/${playlistId}`} className="btn-back">
-              <i className="fas fa-arrow-left"></i> Back to Playlist
-            </Link>
-          </nav>
-          <h1 className="video-title">{video.video_title}</h1>
-          <p className="video-description">{video.description}</p>
-        </div>
-
         <div className="video-container">
-          <video 
-            src={getFullUrl(video.video_url)} 
-            controls 
-            autoPlay
-            className="video-player"
-          ></video>
-        </div>
-
-        {error && <div className="error-message">{error}</div>}
-
-        <div className="video-actions">
-          <button 
-            className={`btn-like ${isLiked ? 'active' : ''}`} 
-            onClick={handleLike}
-          >
-            <i className={`fas fa-thumbs-up ${isLiked ? 'active' : ''}`}></i>
-            <span>{likeCount} {likeCount === 1 ? 'Like' : 'Likes'}</span>
-          </button>
-
-          <button 
-            className={`btn-save ${isSaved ? 'active' : ''}`} 
-            onClick={handleSave}
-          >
-            <i className={`fas fa-bookmark ${isSaved ? 'active' : ''}`}></i>
-            {isSaved ? 'Saved' : 'Save'}
-          </button>
-        </div>
-
-        <div className="comments-section">
-          <h3 className="comments-heading">Comments</h3>
+          <div className="video">
+            <video 
+              src={getFullUrl(video.video_url)} 
+              controls 
+              autoPlay
+            ></video>
+          </div>
           
-          <form onSubmit={handleComment} className="comments-form">
+          <h3 className="title">{video.video_title}</h3>
+          
+          <div className="info">
+            <p><i className="fas fa-calendar"></i><span>Posted on: </span>{new Date(video.created_at).toLocaleDateString()}</p>
+            <p><i className="fas fa-heart"></i><span>Likes: </span>{likeCount}</p>
+          </div>
+
+          <div className="tutor">
+            <img src={getFullUrl(video.tutor_image) || '/default-avatar.png'} alt="tutor" />
+            <div>
+              <h3>{video.tutor_name || 'Instructor'}</h3>
+              <span>Course Instructor</span>
+            </div>
+          </div>
+
+          <div className="description">
+            <p>{video.description}</p>
+          </div>
+
+          <div className="video-actions">
+            <button 
+              className={`btn-like ${isLiked ? 'active' : ''}`} 
+              onClick={handleLike}
+            >
+              <i className={`fas fa-thumbs-up ${isLiked ? 'active' : ''}`}></i>
+              <span>{likeCount} {likeCount === 1 ? 'Like' : 'Likes'}</span>
+            </button>
+
+            <button 
+              className={`btn-save ${isSaved ? 'active' : ''}`} 
+              onClick={handleSave}
+            >
+              <i className={`fas fa-bookmark ${isSaved ? 'active' : ''}`}></i>
+              <span>{isSaved ? 'Saved' : 'Save'}</span>
+            </button>
+          </div>
+        </div>
+
+        <div className="comments">
+          <h3 className="">Comments</h3>
+          
+          <form onSubmit={handleComment} className="add-comment">
             <textarea
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               placeholder="Add a comment..."
               required
-              className="comments-input"
             />
             <button 
               type="submit" 
@@ -175,13 +183,13 @@ const WatchVideo = () => {
             </button>
           </form>
 
-          <div className="comments-list">
+          <div className="box-container">
             {comments.length === 0 ? (
-              <p className="no-comments">No comments yet. Be the first to comment!</p>
+              <h3>No comments yet. Be the first to comment!</h3>
             ) : (
               comments.map((comment) => (
-                <div key={comment.id} className="comment-item">
-                  <div className="comment-header">
+                <div key={comment.id} className="box">
+                  <div className="user">
                     <strong>{comment.username || `User ${comment.user_id}`}</strong>
                     <span className="comment-date">
                       {new Date(comment.created_at).toLocaleDateString('en-US', {
@@ -193,7 +201,7 @@ const WatchVideo = () => {
                       })}
                     </span>
                   </div>
-                  <p className="comment-text">{comment.text}</p>
+                  <p className="comment-box">{comment.text}</p>
                 </div>
               ))
             )}
