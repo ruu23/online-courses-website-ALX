@@ -1,5 +1,5 @@
 import Footer from '../Footer/Footer';
-import reviewsData from '/public/reviews.json'; // Import the JSON data
+import reviewsData from '/public/reviews.json'; 
 
 const About = () => {
   return (

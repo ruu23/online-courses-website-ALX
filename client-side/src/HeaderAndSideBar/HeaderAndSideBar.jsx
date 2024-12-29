@@ -52,6 +52,20 @@ const HeaderAndSideBar = ({ onSearch }) => {
     };
 
     fetchUserData();
+
+    // Listen for user data changes
+    const handleUserDataChange = () => {
+      const storedData = localStorage.getItem('userData');
+      if (storedData) {
+        setUserData(JSON.parse(storedData));
+      }
+    };
+
+    window.addEventListener('userDataChanged', handleUserDataChange);
+
+    return () => {
+      window.removeEventListener('userDataChanged', handleUserDataChange);
+    };
   }, []);
 
   useEffect(() => {

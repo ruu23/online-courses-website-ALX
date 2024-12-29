@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import Footer from '../Footer/Footer';
-import './WatchVideo.css';
 
 const WatchVideo = () => {
   const { playlistId, videoId } = useParams();
@@ -43,9 +42,7 @@ const WatchVideo = () => {
   const handleComment = async (e) => {
     e.preventDefault();
     
-    // Get user from localStorage
     const user = JSON.parse(localStorage.getItem('user_id'));
-    
     if (!user) {
       setError('Please log in to comment');
       return;
@@ -56,23 +53,21 @@ const WatchVideo = () => {
     try {
       const response = await axios.post(`http://localhost:5000/courses/${playlistId}/${videoId}/comment`, {
         text: newComment.trim(),
-        user_id: user.user_id // Match the backend expectation
+        user_id: user.user_id,
       });
-      
-      // Create new comment object
+
       const newCommentData = {
         id: response.data.id,
         text: response.data.text,
         user_id: user.user_id,
         username: user.username,
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       };
-      
-      setComments(prevComments => [...prevComments, newCommentData]);
+
+      setComments((prevComments) => [...prevComments, newCommentData]);
       setNewComment('');
       setError(null);
     } catch (err) {
-      console.error('Comment error:', err);
       setError(err.response?.data?.message || 'Failed to add comment');
     }
   };
@@ -86,7 +81,7 @@ const WatchVideo = () => {
 
     try {
       const response = await axios.post(`http://localhost:5000/courses/${playlistId}/${videoId}/like`, {
-        user_id: user.user_id
+        user_id: user,
       });
       setIsLiked(response.data.is_liked);
       setLikeCount(response.data.like_count);
@@ -105,7 +100,7 @@ const WatchVideo = () => {
 
     try {
       const response = await axios.post(`http://localhost:5000/courses/${playlistId}/${videoId}/save`, {
-        user_id: user.user_id
+        user_id: user.user_id,
       });
       setIsSaved(response.data.is_saved);
       setError(null);
@@ -119,38 +114,32 @@ const WatchVideo = () => {
   if (!video) return <div className="error">Video not found</div>;
 
   return (
-    <div className="watch-page">
+    <div>
       <section className="watch-video">
-        {/* Video Navigation */}
         <div className="video-details">
-          <nav className="nav">
-            <Link to={`/courses/${playlistId}`} className="back-btn">
+          <nav className="video-nav">
+            <Link to={`/courses/${playlistId}`} className="btn-back">
               <i className="fas fa-arrow-left"></i> Back to Playlist
             </Link>
           </nav>
-          <h1 className="title">{video.video_title}</h1>
-          <p className="description">{video.description}</p>
+          <h1 className="video-title">{video.video_title}</h1>
+          <p className="video-description">{video.description}</p>
         </div>
 
-        {/* Video Player */}
         <div className="video-container">
           <video 
             src={getFullUrl(video.video_url)} 
             controls 
             autoPlay
-            className="video"
+            className="video-player"
           ></video>
         </div>
 
-        {/* Error Display */}
-        {error && (
-          <div className="error-message">{error}</div>
-        )}
+        {error && <div className="error-message">{error}</div>}
 
-        {/* Video Actions */}
         <div className="video-actions">
           <button 
-            className={`like-btn ${isLiked ? 'active' : ''}`} 
+            className={`btn-like ${isLiked ? 'active' : ''}`} 
             onClick={handleLike}
           >
             <i className={`fas fa-thumbs-up ${isLiked ? 'active' : ''}`}></i>
@@ -158,7 +147,7 @@ const WatchVideo = () => {
           </button>
 
           <button 
-            className={`save-btn ${isSaved ? 'active' : ''}`} 
+            className={`btn-save ${isSaved ? 'active' : ''}`} 
             onClick={handleSave}
           >
             <i className={`fas fa-bookmark ${isSaved ? 'active' : ''}`}></i>
@@ -166,35 +155,32 @@ const WatchVideo = () => {
           </button>
         </div>
 
-        {/* Comments Section */}
         <div className="comments-section">
-          <h3>Comments</h3>
+          <h3 className="comments-heading">Comments</h3>
           
-          {/* Comment Form */}
-          <form onSubmit={handleComment} className="comment-form">
+          <form onSubmit={handleComment} className="comments-form">
             <textarea
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               placeholder="Add a comment..."
               required
-              className="comment-input"
+              className="comments-input"
             />
             <button 
               type="submit" 
               disabled={!newComment.trim()}
-              className="comment-submit"
+              className="btn-submit"
             >
               Add Comment
             </button>
           </form>
 
-          {/* Comments List */}
           <div className="comments-list">
             {comments.length === 0 ? (
               <p className="no-comments">No comments yet. Be the first to comment!</p>
             ) : (
               comments.map((comment) => (
-                <div key={comment.id} className="comment">
+                <div key={comment.id} className="comment-item">
                   <div className="comment-header">
                     <strong>{comment.username || `User ${comment.user_id}`}</strong>
                     <span className="comment-date">
@@ -203,7 +189,7 @@ const WatchVideo = () => {
                         month: 'short',
                         day: 'numeric',
                         hour: '2-digit',
-                        minute: '2-digit'
+                        minute: '2-digit',
                       })}
                     </span>
                   </div>

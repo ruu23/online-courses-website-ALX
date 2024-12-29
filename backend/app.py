@@ -7,8 +7,10 @@ from werkzeug.utils import secure_filename
 import os
 from flask import send_from_directory
 from datetime import datetime
+from flask_cors import CORS
 
 app = create_app()
+CORS(app)
 
 @app.route('/static/<path:filename>')
 def serve_static(filename):
