@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../Footer/Footer';
 import Tracks from '../Tracks/Tracks';
-import './Courses.css';
+
 
 export default function Courses() {
   const [playlists, setPlaylists] = useState([]);
@@ -80,7 +80,7 @@ export default function Courses() {
                     e.target.onerror = null; // Prevent infinite loop
                   }}
                 />
-                <h3 className="title">{playlist.title}</h3>
+                <h3 className="title" style={{fontWeight: 'bold'}}>{playlist.title}</h3>
                 <Link to={`/courses/${playlist.id}`} className="inline-btn">
                   View Playlist
                 </Link>

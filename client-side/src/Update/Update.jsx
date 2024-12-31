@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Footer from "../Footer/Footer";
 
 const Update = () => {
@@ -10,6 +11,7 @@ const Update = () => {
     c_pass: "",
   });
   const [profilePic, setProfilePic] = useState(null);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -49,12 +51,17 @@ const Update = () => {
         body: form  // Remove Content-Type header to let browser set it with boundary
       });
 
-      const result = await response.json();
-      if (response.ok) {
-        alert(result.message);
-      } else {
-        alert(result.error || "An error occurred");
+      if (!response.ok) {
+        const errorData = await response.json();
+        alert(errorData.error || 'Update failed');
+        return;
       }
+
+      const result = await response.json();
+      // Update localStorage with new user data
+      localStorage.setItem('userData', JSON.stringify(result));
+      // Redirect to profile page
+      navigate('/profile');
     } catch (error) {
       console.error("Error:", error);
       alert("An error occurred. Please try again.");

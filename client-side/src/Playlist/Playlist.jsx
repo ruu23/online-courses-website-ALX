@@ -37,46 +37,34 @@ const Playlist = () => {
   return (
     <div>
       <section className="playlist-details">
-        <h1 className="heading">Playlist Details</h1>
+        <h2 className="heading">Playlist Details</h2>
         <div className="row">
-          <div className="column">
-            <div className="thumb">
-              <span>{playlist.videos?.length || 0} videos</span>
-            </div>
+          <div className="thumb">
+            <img src={playlist.thumbnail || '/images/thumb-1.png'} alt="" />
+            <span>{playlist.videos?.length || 0} videos</span>
           </div>
-          <div className="column">
-            <div className="details">
-              <h3>{playlist.title}</h3>
-            </div>
+          <div className="details">
+            <h3 className="title">{playlist.title}</h3>
+            <p className="description">{playlist.description}</p>
+            <button className="save-playlist">
+              <i className="far fa-bookmark"></i> Save Playlist
+            </button>
           </div>
         </div>
       </section>
 
       <section className="playlist-videos">
-        <h1 className="heading">Playlist Videos</h1>
+        <h2 className="heading">Playlist Videos</h2>
         <div className="box-container">
-        {playlist.videos?.map(video => (
-          <Link
-              key={video.id} 
-              to={`/courses/${playlistId}/${video.id}`}
-              className="box"
-            >
-              <div className="video-container">
-                <video 
-                  poster={getFullUrl(video.thumbnail)}
-                  className="video"
-                >
-                  <source src={getFullUrl(video.video_url)} type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-                <div className="play-button">
-                  <i className="fas fa-play"></i>
-                </div>
+          {playlist.videos?.map((video, index) => (
+            <Link key={video.id} to={`/courses/${playlistId}/${video.id}`} className="box">
+              <div className="thumb">
+                <img src={getFullUrl(video.thumbnail) || '/images/html-logo.png'} alt="" />
+                <span>#{String(index + 1).padStart(2, '0')}</span>
               </div>
-              <h3>{video.title}</h3>
-              <p>{video.description}</p>
+              <h3 className="title">{video.title}</h3>
             </Link>
-          ))}  
+          ))}
           {playlist.videos?.length === 0 && (
             <div className="box">
               <p>No videos available in this playlist.</p>

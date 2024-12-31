@@ -313,8 +313,8 @@ def add_comment(playlist_id, video_id):
         user_id = data.get('user_id')
         comment_text = data.get('text')
 
-        # if not user_id:
-        #     return jsonify({"error": "User ID is required"}), 400
+        if not user_id:
+            return jsonify({"error": "User ID is required"}), 400
         if not comment_text or not comment_text.strip():
             return jsonify({"error": "Comment text is required"}), 400
 

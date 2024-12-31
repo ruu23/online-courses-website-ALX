@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Footer from "../Footer/Footer";
 
 const Register = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -51,19 +53,23 @@ const Register = () => {
           user_Name: formData.name,
           user_type: formData.user_type,
           email: formData.email,
-          imgUrl: result.imgUrl || 'images/pic-1.jpg'
+          imgUrl: formData.profile ? URL.createObjectURL(formData.profile) : '/images/pic-1.jpg',
+          comments_count: 0,
+          likes_count: 0,
+          saved_videos_count: 0
         };
         localStorage.setItem('userData', JSON.stringify(userData));
+
+        // Dispatch a custom event to notify components about the user data change
+        window.dispatchEvent(new Event('userDataChanged'));
         
-        // Redirect based on role
+        // Redirect based on user type
         if (formData.user_type === 'teacher') {
-          // For teachers, redirect to their specific profile
-          window.location.href = `/teacher-profile/${result.id}`;
+          navigate('/teachers');
         } else {
-          window.location.href = '/'; // Home page for students
+          navigate('/');
         }
       }
-      alert(result.message || 'Registration successful');
     } catch (error) {
       console.error("Error:", error);
       alert("An error occurred. Please try again.");

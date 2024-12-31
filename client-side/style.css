@@ -73,6 +73,7 @@ section{
    border-bottom: var(--border);
    padding-bottom: 1.5rem;
    text-transform: capitalize;
+   font-weight:bold;
 }
 
 .inline-btn,
@@ -1386,7 +1387,154 @@ section{
    transition: all 0.3s ease-in-out;
 }
 
-
+.playlist-details {
+   padding: 2rem;
+   max-width: 1200px;
+   margin: 0 auto;
+   background-color: var(--white);
+   border-radius: 0.5rem;
+   margin-top: 2rem;
+ }
+ 
+ .playlist-details .row {
+   display: flex;
+   gap: 2.5rem;
+   flex-wrap: wrap;
+   align-items: flex-start;
+ }
+ 
+ .playlist-details .thumb {
+   flex: 1 1 40rem;
+   position: relative;
+ }
+ 
+ .playlist-details .thumb img {
+   width: 100%;
+   height: 25rem;
+   border-radius: 0.5rem;
+   object-fit: cover;
+ }
+ 
+ .playlist-details .thumb span {
+   position: absolute;
+   top: 1rem;
+   left: 1rem;
+   background-color: rgba(0, 0, 0, 0.7);
+   color: var(--white);
+   padding: 0.5rem 1.5rem;
+   font-size: 1.5rem;
+   border-radius: 0.5rem;
+ }
+ 
+ .playlist-details .details {
+   flex: 1 1 40rem;
+ }
+ 
+ .playlist-details .details .title {
+   font-size: 2.5rem;
+   color: var(--black);
+   margin-bottom: 1rem;
+ }
+ 
+ .playlist-details .details .description {
+   font-size: 1.6rem;
+   color: var(--light-color);
+   line-height: 2;
+   margin-bottom: 1.5rem;
+ }
+ 
+ .playlist-details .details .tutor {
+   display: flex;
+   align-items: center;
+   gap: 1.5rem;
+   margin-bottom: 2rem;
+ }
+ 
+ .playlist-details .details .tutor img {
+   width: 5rem;
+   height: 5rem;
+   border-radius: 50%;
+   object-fit: cover;
+ }
+ 
+ .playlist-details .details .tutor h3 {
+   font-size: 1.8rem;
+   color: var(--black);
+   margin-bottom: 0.2rem;
+ }
+ 
+ .playlist-details .details .tutor span {
+   font-size: 1.4rem;
+   color: var(--light-color);
+ }
+ 
+ .playlist-details .details .save-playlist {
+   background-color: var(--light-bg);
+   color: var(--black);
+   border-radius: 0.5rem;
+   padding: 1rem 2.5rem;
+   font-size: 1.8rem;
+   cursor: pointer;
+   margin-top: 1rem;
+ }
+ 
+ .playlist-details .details .save-playlist:hover {
+   background-color: var(--black);
+   color: var(--white);
+ }
+ 
+ .playlist-videos {
+   padding: 2rem;
+   max-width: 1200px;
+   margin: 2rem auto;
+ }
+ 
+ .playlist-videos .box-container {
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
+   gap: 1.5rem;
+   align-items: flex-start;
+ }
+ 
+ .playlist-videos .box {
+   background-color: var(--white);
+   border-radius: 0.5rem;
+   padding: 2rem;
+   position: relative;
+ }
+ 
+ .playlist-videos .box .thumb {
+   position: relative;
+   height: 20rem;
+   margin-bottom: 1.5rem;
+ }
+ 
+ .playlist-videos .box .thumb img {
+   width: 100%;
+   height: 100%;
+   border-radius: 0.5rem;
+   object-fit: cover;
+ }
+ 
+ .playlist-videos .box .thumb span {
+   position: absolute;
+   top: 1rem;
+   right: 1rem;
+   background-color: rgba(0, 0, 0, 0.7);
+   color: var(--white);
+   padding: 0.5rem 1.5rem;
+   font-size: 1.5rem;
+   border-radius: 0.5rem;
+ }
+ 
+ .playlist-videos .box .title {
+   font-size: 1.8rem;
+   color: var(--black);
+   overflow: hidden;
+   text-overflow: ellipsis;
+   white-space: nowrap;
+ }
+ 
 /*.tracks .box-container {
    display: flex;
    flex-wrap: wrap;
