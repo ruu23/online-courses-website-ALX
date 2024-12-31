@@ -30,25 +30,29 @@ const Playlist = () => {
     return `http://localhost:5000/${path}`;
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!playlist) return <div>Playlist not found</div>;
+  if (loading) return <div className='heading'>Loading...</div>;
+  if (error) return <div className='heading'>Error: {error}</div>;
+  if (!playlist) return <div className='heading'>Playlist not found</div>;
 
   return (
     <div>
       <section className="playlist-details">
         <h2 className="heading">Playlist Details</h2>
         <div className="row">
-          <div className="thumb">
-            <img src={playlist.thumbnail || '/images/thumb-1.png'} alt="" />
-            <span>{playlist.videos?.length || 0} videos</span>
+          <div className='column'>
+            <form action="" method="post" className="save-playlist">
+              <button type="submit"><i className="far fa-bookmark"></i> <span>save playlist</span></button>
+            </form>
+            <div className="thumb">
+              <img src={playlist.thumbnail || '/images/thumb-1.png'} alt="" />
+              <span>{playlist.videos?.length || 0} videos</span>
+            </div>
           </div>
-          <div className="details">
-            <h3 className="title">{playlist.title}</h3>
-            <p className="description">{playlist.description}</p>
-            <button className="save-playlist">
-              <i className="far fa-bookmark"></i> Save Playlist
-            </button>
+          <div className="column flex items-start mb-[250px]">
+            <div className="details">
+              <h3 style={{ fontWeight: "bold" }}>{playlist.title}</h3>
+              <p className="text-gray-600">{playlist.description}</p>
+            </div>
           </div>
         </div>
       </section>
@@ -56,18 +60,17 @@ const Playlist = () => {
       <section className="playlist-videos">
         <h2 className="heading">Playlist Videos</h2>
         <div className="box-container">
-          {playlist.videos?.map((video, index) => (
+        
+          {playlist.videos?.map((video) => (
             <Link key={video.id} to={`/courses/${playlistId}/${video.id}`} className="box">
-              <div className="thumb">
+                <i className="fas fa-play"></i>
                 <img src={getFullUrl(video.thumbnail) || '/images/html-logo.png'} alt="" />
-                <span>#{String(index + 1).padStart(2, '0')}</span>
-              </div>
-              <h3 className="title">{video.title}</h3>
+                <h3 style={{ fontWeight: "bold" }}>{video.title}</h3>
             </Link>
           ))}
           {playlist.videos?.length === 0 && (
             <div className="box">
-              <p>No videos available in this playlist.</p>
+              <p className='heading'>No videos available in this playlist.</p>
             </div>
           )}
         </div>
