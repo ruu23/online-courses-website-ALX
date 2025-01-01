@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams} from 'react-router-dom';
 import axios from 'axios';
 import Footer from '../Footer/Footer';
 import '../App.css';

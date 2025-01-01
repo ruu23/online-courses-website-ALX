@@ -286,89 +286,89 @@ def init_db():
     db.session.commit()
     
     
-# JQuery Playlist
-playlist_JQuery = Playlist(title="Complete JQuery Tutorial")
-video1_JQuery = Video(
-    title="Complete JQuery Tutorial (Part 01)",
-    description="Introduction to JQuery",
-    video_url="static/videos/JQuery/JQuery_v1.mp4",
-    thumbnail="static/imgs/JQuery/JQuery1.png",
-    playlist=playlist_JQuery
-)
-video2_JQuery = Video(
-    title="Complete JQuery Tutorial (Part 02)",
-    description="Selectors and Events",
-    video_url="static/videos/JQuery/JQuery_v2.mp4",
-    thumbnail="static/imgs/JQuery/JQuery2.png",
-    playlist=playlist_JQuery
-)
-video3_JQuery = Video(
-    title="Complete JQuery Tutorial (Part 03)",
-    description="Manipulating the DOM",
-    video_url="static/videos/JQuery/JQuery_v3.mp4",
-    thumbnail="static/imgs/JQuery/JQuery3.png",
-    playlist=playlist_JQuery
-)
-video4_JQuery = Video(
-    title="Complete JQuery Tutorial (Part 04)",
-    description="Animations and Effects",
-    video_url="static/videos/JQuery/JQuery_v4.mp4",
-    thumbnail="static/imgs/JQuery/JQuery4.png",
-    playlist=playlist_JQuery
-)
-video5_JQuery = Video(
-    title="Complete JQuery Tutorial (Part 05)",
-    description="AJAX with JQuery",
-    video_url="static/videos/JQuery/JQuery_v5.mp4",
-    thumbnail="static/imgs/JQuery/JQuery5.png",
-    playlist=playlist_JQuery
-)
+    # JQuery Playlist
+    playlist_JQuery = Playlist(title="Complete JQuery Tutorial")
+    video1_JQuery = Video(
+        title="Complete JQuery Tutorial (Part 01)",
+        description="Introduction to JQuery",
+        video_url="static/videos/JQuery/JQuery_v1.mp4",
+        thumbnail="static/imgs/JQuery/JQuery1.png",
+        playlist=playlist_JQuery
+    )
+    video2_JQuery = Video(
+        title="Complete JQuery Tutorial (Part 02)",
+        description="Selectors and Events",
+        video_url="static/videos/JQuery/JQuery_v2.mp4",
+        thumbnail="static/imgs/JQuery/JQuery2.png",
+        playlist=playlist_JQuery
+    )
+    video3_JQuery = Video(
+        title="Complete JQuery Tutorial (Part 03)",
+        description="Manipulating the DOM",
+        video_url="static/videos/JQuery/JQuery_v3.mp4",
+        thumbnail="static/imgs/JQuery/JQuery3.png",
+        playlist=playlist_JQuery
+    )
+    video4_JQuery = Video(
+        title="Complete JQuery Tutorial (Part 04)",
+        description="Animations and Effects",
+        video_url="static/videos/JQuery/JQuery_v4.mp4",
+        thumbnail="static/imgs/JQuery/JQuery4.png",
+        playlist=playlist_JQuery
+    )
+    video5_JQuery = Video(
+        title="Complete JQuery Tutorial (Part 05)",
+        description="AJAX with JQuery",
+        video_url="static/videos/JQuery/JQuery_v5.mp4",
+        thumbnail="static/imgs/JQuery/JQuery5.png",
+        playlist=playlist_JQuery
+    )
 
-db.session.add(playlist_JQuery)
-db.session.add_all([video1_JQuery, video2_JQuery, video3_JQuery, video4_JQuery, video5_JQuery])
-db.session.commit()
+    db.session.add(playlist_JQuery)
+    db.session.add_all([video1_JQuery, video2_JQuery, video3_JQuery, video4_JQuery, video5_JQuery])
+    db.session.commit()
 
-# Sass Playlist
-playlist_Sass = Playlist(title="Complete Sass Tutorial")
-video1_Sass = Video(
-    title="Complete Sass Tutorial (Part 01)",
-    description="Introduction to Sass",
-    video_url="static/videos/Sass/Sass_v1.mp4",
-    thumbnail="static/imgs/Sass/Sass1.png",
-    playlist=playlist_Sass
-)
-video2_Sass = Video(
-    title="Complete Sass Tutorial (Part 02)",
-    description="Variables and Nesting",
-    video_url="static/videos/Sass/Sass_v2.mp4",
-    thumbnail="static/imgs/Sass/Sass2.png",
-    playlist=playlist_Sass
-)
-video3_Sass = Video(
-    title="Complete Sass Tutorial (Part 03)",
-    description="Mixins and Extends",
-    video_url="static/videos/Sass/Sass_v3.mp4",
-    thumbnail="static/imgs/Sass/Sass3.png",
-    playlist=playlist_Sass
-)
-video4_Sass = Video(
-    title="Complete Sass Tutorial (Part 04)",
-    description="Sass Functions",
-    video_url="static/videos/Sass/Sass_v4.mp4",
-    thumbnail="static/imgs/Sass/Sass4.png",
-    playlist=playlist_Sass
-)
-video5_Sass = Video(
-    title="Complete Sass Tutorial (Part 05)",
-    description="Project Integration",
-    video_url="static/videos/Sass/Sass_v5.mp4",
-    thumbnail="static/imgs/Sass/Sass5.png",
-    playlist=playlist_Sass
-)
+    # Sass Playlist
+    playlist_Sass = Playlist(title="Complete Sass Tutorial")
+    video1_Sass = Video(
+        title="Complete Sass Tutorial (Part 01)",
+        description="Introduction to Sass",
+        video_url="static/videos/Sass/Sass_v1.mp4",
+        thumbnail="static/imgs/Sass/Sass1.png",
+        playlist=playlist_Sass
+    )
+    video2_Sass = Video(
+        title="Complete Sass Tutorial (Part 02)",
+        description="Variables and Nesting",
+        video_url="static/videos/Sass/Sass_v2.mp4",
+        thumbnail="static/imgs/Sass/Sass2.png",
+        playlist=playlist_Sass
+    )
+    video3_Sass = Video(
+        title="Complete Sass Tutorial (Part 03)",
+        description="Mixins and Extends",
+        video_url="static/videos/Sass/Sass_v3.mp4",
+        thumbnail="static/imgs/Sass/Sass3.png",
+        playlist=playlist_Sass
+    )
+    video4_Sass = Video(
+        title="Complete Sass Tutorial (Part 04)",
+        description="Sass Functions",
+        video_url="static/videos/Sass/Sass_v4.mp4",
+        thumbnail="static/imgs/Sass/Sass4.png",
+        playlist=playlist_Sass
+    )
+    video5_Sass = Video(
+        title="Complete Sass Tutorial (Part 05)",
+        description="Project Integration",
+        video_url="static/videos/Sass/Sass_v5.mp4",
+        thumbnail="static/imgs/Sass/Sass5.png",
+        playlist=playlist_Sass
+    )
 
-db.session.add(playlist_Sass)
-db.session.add_all([video1_Sass, video2_Sass, video3_Sass, video4_Sass, video5_Sass])
-db.session.commit()
+    db.session.add(playlist_Sass)
+    db.session.add_all([video1_Sass, video2_Sass, video3_Sass, video4_Sass, video5_Sass])
+    db.session.commit()
 
 
 

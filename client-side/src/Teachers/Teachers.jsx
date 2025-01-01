@@ -36,7 +36,6 @@ const Teachers = () => {
             onChange={handleSearch}
             placeholder="search tutors..."
             maxLength="100"
-            className="search-input"
           />
           <button type="submit" className="fas fa-search"></button>
         </form>
@@ -46,30 +45,28 @@ const Teachers = () => {
             <h3>Become A Tutor</h3>
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet, itaque ipsam fuga ex et aliquam.</p>
             <Link to="/register" className="inline-btn">
-              <button className="btn">Get Started</button>
+              <button>Get Started</button>
             </Link>
           </div>
-
           {filteredTeachers.map((teacher) => (
             <div className="box" key={teacher._id}>
               <div className="tutor">
                 <img 
                   src={teacher.imgUrl || "/images/pic-1.jpg"} 
-                  alt="" 
-                  className="profile-img"
+                  alt=""
                 />
                 <div>
                   <h3>{teacher.user_Name}</h3>
                   <span>{teacher.user_type}</span>
                 </div>
               </div>
-              <div className="stats">
+              <div>
                 <p>total playlists : <span>{teacher.playlists_count}</span></p>
                 <p>total videos : <span>{teacher.videos_count}</span></p>
                 <p>total likes : <span>{teacher.likes_count}</span></p>
               </div>
               <Link to={`/teacher/profile/${teacher._id}`}>
-                <button className="btn">View Profile</button>
+                <button className="inline-btn">View Profile</button>
               </Link>
             </div>
           ))}
