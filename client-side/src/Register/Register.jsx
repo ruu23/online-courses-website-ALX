@@ -11,7 +11,6 @@ const Register = () => {
     c_pass: "",
     profile: null,
     user_type: "",
-
   });
 
   const handleChange = (e) => {
@@ -24,6 +23,11 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (formData.pass !== formData.c_pass) {
+      alert("Passwords do not match!");
+      return;
+    }
 
     const data = new FormData();
     data.append("name", formData.name);
@@ -39,17 +43,15 @@ const Register = () => {
         body: data,
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        alert(errorData.error || 'Registration failed');
-        return;
-      }
-
       const result = await response.json();
-      if (result.id) {
-        localStorage.setItem('user_id', result.id);
-        // Store user data for immediate display
+      
+      if (response.ok) {
+        // Store user ID directly
+        localStorage.setItem("user_id", result.user_id);
+        
+        // Create userData object
         const userData = {
+          user_id: result.user_id,
           user_Name: formData.name,
           user_type: formData.user_type,
           email: formData.email,
@@ -58,9 +60,10 @@ const Register = () => {
           likes_count: 0,
           saved_videos_count: 0
         };
-        localStorage.setItem('userData', JSON.stringify(userData));
-
-        // Dispatch a custom event to notify components about the user data change
+        
+        localStorage.setItem("userData", JSON.stringify(userData));
+        
+        // Dispatch event to notify components about user data change
         window.dispatchEvent(new Event('userDataChanged'));
         
         // Redirect based on user type
@@ -69,6 +72,8 @@ const Register = () => {
         } else {
           navigate('/');
         }
+      } else {
+        alert(result.message || 'Registration failed');
       }
     } catch (error) {
       console.error("Error:", error);
@@ -126,39 +131,30 @@ const Register = () => {
             onChange={handleChange}
           />
 
-          <div className="flex">
-            <div className="box">
-              <p>Select your role <span>*</span></p>
-              <select 
-                name="user_type" 
-                className="select" 
-                required
-                value={formData.user_type}
-                onChange={handleChange}
-              >
-                <option value="" disabled selected>Select your role</option>
-                <option value="student">student</option>
-                <option value="teacher">teacher</option>
-              </select>
-            </div>
-          </div>
-
           <p>Select Profile <span>*</span></p>
           <input
             type="file"
+            name="profile"
             accept="image/*"
             required
             className="box"
-            name="profile"
             onChange={handleChange}
           />
 
-          <input
-            type="submit"
-            value="Register New"
-            name="submit"
-            className="btn"
-          />
+          <p>Select User Type <span>*</span></p>
+          <select
+            name="user_type"
+            className="box"
+            required
+            onChange={handleChange}
+            value={formData.user_type}
+          >
+            <option value="">Select Type</option>
+            <option value="student">Student</option>
+            <option value="teacher">Teacher</option>
+          </select>
+
+          <input type="submit" value="Register Now" className="btn" />
         </form>
       </section>
 

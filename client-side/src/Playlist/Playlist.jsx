@@ -8,12 +8,14 @@ const Playlist = () => {
   const [playlist, setPlaylist] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isSaved, setIsSaved] = useState(false);
 
   useEffect(() => {
     const fetchPlaylist = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/courses/${playlistId}`);
         setPlaylist(response.data);
+        setIsSaved(response.data.is_saved || false); // Assuming the backend provides this field
         setLoading(false);
       } catch (err) {
         setError(err.response?.data?.message || 'Failed to fetch playlist');
@@ -30,6 +32,26 @@ const Playlist = () => {
     return `http://localhost:5000/${path}`;
   };
 
+  const handleSavePlaylist = async () => {
+    const user = JSON.parse(localStorage.getItem('user_id'));
+    if (!user) {
+      alert('Please log in to save playlists');
+      return;
+    }
+
+    try {
+      const response = await axios.post(`http://localhost:5000/courses/${playlistId}/save`, {
+        user_id: user.user_id,
+      });
+
+      setIsSaved(response.data.is_saved);
+      alert(response.data.message);
+    } catch (err) {
+      console.error('Error saving playlist:', err);
+      alert(err.response?.data?.message || 'Failed to save playlist');
+    }
+  };
+
   if (loading) return <div className='heading'>Loading...</div>;
   if (error) return <div className='heading'>Error: {error}</div>;
   if (!playlist) return <div className='heading'>Playlist not found</div>;
@@ -41,7 +63,14 @@ const Playlist = () => {
         <div className="row">
           <div className='column'>
             <form action="" method="post" className="save-playlist">
-              <button type="submit"><i className="far fa-bookmark"></i> <span>save playlist</span></button>
+              <button 
+                className={` ${isSaved ? 'saved' : ''}`} 
+                onClick={handleSavePlaylist}
+                type='submit'
+              >
+                <i className={`far ${isSaved ? 'fa-check-circle' : 'fa-bookmark'}`}></i> 
+                <span>{isSaved ? 'Saved' : 'Save Playlist'}</span>
+              </button>
             </form>
             <div className="thumb">
               <img src={playlist.thumbnail || '/images/thumb-1.png'} alt="" />
@@ -60,12 +89,11 @@ const Playlist = () => {
       <section className="playlist-videos">
         <h2 className="heading">Playlist Videos</h2>
         <div className="box-container">
-        
           {playlist.videos?.map((video) => (
             <Link key={video.id} to={`/courses/${playlistId}/${video.id}`} className="box">
-                <i className="fas fa-play"></i>
-                <img src={getFullUrl(video.thumbnail) || '/images/html-logo.png'} alt="" />
-                <h3 style={{ fontWeight: "bold" }}>{video.title}</h3>
+              <i className="fas fa-play"></i>
+              <img src={getFullUrl(video.thumbnail) || '/images/html-logo.png'} alt="" />
+              <h3 style={{ fontWeight: "bold" }}>{video.title}</h3>
             </Link>
           ))}
           {playlist.videos?.length === 0 && (

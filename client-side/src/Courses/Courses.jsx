@@ -52,7 +52,7 @@ export default function Courses() {
         <div className="box-container">
           {loading ? (
             <div className="box">
-              <p>Loading courses...</p>
+              <p className='heading'>Loading courses...</p>
             </div>
           ) : error ? (
             <div className="box">
@@ -66,24 +66,26 @@ export default function Courses() {
             </div>
           ) : playlists.length === 0 ? (
             <div className="box">
-              <p>No courses available at the moment.</p>
+              <p className='heading'>No courses available at the moment.</p>
             </div>
           ) : (
             playlists.map(playlist => (
               <div key={playlist.id} className="box">
-                <img 
-                  src={`http://localhost:5000/${playlist.thumbnail}`} 
-                  alt={playlist.title} 
-                  className="thumbnail" 
-                  onError={(e) => {
-                    e.target.src = '/placeholder-course.png'; // Add a placeholder image
-                    e.target.onerror = null; // Prevent infinite loop
-                  }}
-                />
-                <h3 className="title" style={{fontWeight: 'bold'}}>{playlist.title}</h3>
-                <Link to={`/courses/${playlist.id}`} className="inline-btn">
-                  View Playlist
-                </Link>
+                <div className='thumb'>
+                  <img 
+                    src={`http://localhost:5000/${playlist.thumbnail}`} 
+                    alt={playlist.title}
+                    onError={(e) => {
+                      e.target.src = '/placeholder-course.png'; // Add a placeholder image
+                      e.target.onerror = null; // Prevent infinite loop
+                    }}
+                  />
+                  <span>6 videos</span>
+                </div>
+                  <h3 className="title" style={{fontWeight: 'bold'}}>{playlist.title}</h3>
+                  <Link to={`/courses/${playlist.id}`} className="inline-btn">
+                    View Playlist
+                  </Link>
               </div>
             ))
           )}

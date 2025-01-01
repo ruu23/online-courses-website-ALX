@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Footer from "../Footer/Footer";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     pass: "",
@@ -27,12 +29,34 @@ const Login = () => {
 
       const result = await response.json();
       if (response.ok) {
-        localStorage.setItem('user_id', result.user_id);
-        localStorage.setItem('username', result.username);
-        localStorage.setItem('img_url', result.img_url);
-        alert(result.message);
+        // Store user ID directly
+        localStorage.setItem("user_id", result.user_id);
+        
+        // Create userData object
+        const userData = {
+          user_id: result.user_id,
+          user_Name: result.username,
+          user_type: result.user_type,
+          email: formData.email,
+          imgUrl: result.img_url || '/images/pic-1.jpg',
+          comments_count: result.comments_count || 0,
+          likes_count: result.likes_count || 0,
+          saved_videos_count: result.saved_videos_count || 0
+        };
+        
+        localStorage.setItem("userData", JSON.stringify(userData));
+        
+        // Dispatch event to notify components about user data change
+        window.dispatchEvent(new Event('userDataChanged'));
+        
+        // Redirect based on user type
+        if (result.user_type === 'teacher') {
+          navigate('/teachers');
+        } else {
+          navigate('/');
+        }
       } else {
-        alert(result.message);
+        alert(result.message || 'Login failed');
       }
     } catch (error) {
       console.error("Error:", error);
