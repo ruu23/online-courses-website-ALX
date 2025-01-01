@@ -91,6 +91,7 @@ const WatchVideo = () => {
       const response = await axios.post(`http://localhost:5000/courses/${playlistId}/${videoId}/comment`, {
         text: newComment.trim(),
         user_id: user.user_id,
+        img:user.imgUrl
       });
 
       const newCommentData = {
@@ -214,8 +215,7 @@ const WatchVideo = () => {
             </p>
             <p>
               <i className="fas fa-heart"></i>
-              <span>Likes: </span>
-              {likeCount}
+              <span>{likeCount} Likes</span>
             </p>
           </div>
 
@@ -243,7 +243,7 @@ const WatchVideo = () => {
         <h1 className="heading">Comments</h1>
 
         <form onSubmit={handleComment} className="add-comment">
-          <h3>Add Comments</h3>
+          <h3 style={{ fontWeight: "bold" }}>Add Comments</h3>
           <textarea
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
@@ -268,16 +268,19 @@ const WatchVideo = () => {
             comments.map((comment) => (
               <div key={comment.id} className="box">
                 <div className="user">
-                  <h3>{comment.username || `User ${comment.user_id}`}</h3>
-                  <span>
-                    {new Date(comment.created_at).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </span>
+                  <img src={comment.img || "/images/pic-2.jpg"} alt=""/>
+                  <div>
+                    <h3 style={{ fontWeight: "bold" }}>{comment.username || `User ${comment.user_id}`}</h3>
+                    <span>
+                      {new Date(comment.created_at).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </span>
+                  </div>
                 </div>
                 <p className="comment-box">{comment.text}</p>
                 <div className="flex-btn">
