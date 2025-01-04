@@ -9,6 +9,7 @@ const Contact = () => {
     msg: ''
   });
   const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     setFormData({
@@ -17,18 +18,50 @@ const Contact = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // submission logic
-    console.log('Form submitted:', formData);
-    setMessage('Message sent successfully!');
-    // Clear form
-    setFormData({
-      name: '',
-      email: '',
-      number: '',
-      msg: ''
-    });
+    setError('');
+    setMessage('');
+
+    try {
+      // Get user_id from localStorage
+      const user_id = localStorage.getItem('user_id'); 
+
+      if (!user_id) {
+        setError('Please login to send a message');
+        return;
+      }
+
+      const response = await fetch('/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: user_id,
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          number: formData.number.trim(),
+          message: formData.message.trim() 
+        })
+      });
+
+      const data = await response.json();
+      
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      setMessage('Message sent successfully!');
+      setFormData({
+        name: '',
+        email: '',
+        number: '',
+        msg: ''
+      });
+    } catch (err) {
+      setError(err.message || 'Failed to send message. Please try again.');
+    }
   };
 
   return (
@@ -40,46 +73,47 @@ const Contact = () => {
           </div>
           <form onSubmit={handleSubmit}>
             <h3>get in touch</h3>
+            {error && <div className="error-message" style={{ color: 'red', marginBottom: '1rem' }}>{error}</div>}
             {message && <div className="success-message" style={{ color: 'green', marginBottom: '1rem' }}>{message}</div>}
-            <input 
-              type="text" 
-              placeholder="enter your name" 
-              name="name" 
+            <input
+              type="text"
+              placeholder="enter your name"
+              name="name"
               value={formData.name}
               onChange={handleChange}
-              required 
-              maxLength="50" 
-              className="box" 
+              required
+              maxLength="50"
+              className="box"
             />
-            <input 
-              type="email" 
-              placeholder="enter your email" 
-              name="email" 
+            <input
+              type="email"
+              placeholder="enter your email"
+              name="email"
               value={formData.email}
               onChange={handleChange}
-              required 
-              maxLength="50" 
-              className="box" 
+              required
+              maxLength="50"
+              className="box"
             />
-            <input 
-              type="number" 
-              placeholder="enter your number" 
-              name="number" 
+            <input
+              type="number"
+              placeholder="enter your number"
+              name="number"
               value={formData.number}
               onChange={handleChange}
-              required 
-              maxLength="50" 
-              className="box" 
+              required
+              maxLength="50"
+              className="box"
             />
-            <textarea 
-              name="msg" 
-              className="box" 
-              placeholder="enter your message" 
-              value={formData.msg}
+            <textarea
+              name="msg"
+              className="box"
+              placeholder="enter your message"
+              value={formData.message}
               onChange={handleChange}
-              required 
-              maxLength="1000" 
-              cols="30" 
+              required
+              maxLength="1000"
+              cols="30"
               rows="10"
             ></textarea>
             <input type="submit" value="send message" className="inline-btn" />
@@ -96,8 +130,8 @@ const Contact = () => {
           <div className="box">
             <i className="fas fa-envelope"></i>
             <h3>email address</h3>
-            <a href="mailto:shaikhanas@gmail.com">shaikhanas@gmail.come</a>
-            <a href="mailto:anasbhai@gmail.com">anasbhai@gmail.come</a>
+            <a href="mailto:shaikhanas@gmail.com">shaikhanas@gmail.com</a>
+            <a href="mailto:anasbhai@gmail.com">anasbhai@gmail.com</a>
           </div>
           <div className="box">
             <i className="fas fa-map-marker-alt"></i>
