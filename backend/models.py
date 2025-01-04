@@ -52,6 +52,7 @@ class Comment(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     video_id = db.Column(db.Integer, db.ForeignKey('video.id'), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    img_url = db.Column(db.String(200), nullable=True)
 
     user = db.relationship('Users', backref='comments') # backref will create a new column in the class Users named comments
     video = db.relationship('Video', backref='comments') # backref will create a new column in the class Video named comments
@@ -369,10 +370,3 @@ def init_db():
     db.session.add(playlist_Sass)
     db.session.add_all([video1_Sass, video2_Sass, video3_Sass, video4_Sass, video5_Sass])
     db.session.commit()
-
-
-
-
-
-
-
