@@ -103,8 +103,8 @@ class Teacher(db.Model):
 
 def init_db():
     # Check if playlists already exist
-    if Playlist.query.filter_by(title="Complete HTML Tutorial").first() is not None:
-        return  # Database already initialized
+    # if Playlist.query.filter_by(title="Complete HTML Tutorial").first() is not None:
+    #     return  # Database already initialized
     playlist_html = Playlist(title= "Complete HTML Tutorial", thumbnail="static/imgs/Html/thumb-1.png")
     video1_html = Video(
                 title = "Complete HTML Tutorial (Part 01)",
@@ -202,7 +202,7 @@ def init_db():
     db.session.commit()
 
 # Playlist Bootstrap 
-    playlist_Bootstrap = Playlist(title= "Complete Bootstrap Tutorial")
+    playlist_Bootstrap = Playlist(title= "Complete Bootstrap Tutorial", thumbnail="static/imgs/Bootstrap/learn Bootstrap.png")
     video1_Bootstrap = Video(
                 title = "Complete Bootstrap Tutorial (Part 01)",
                 description = "Introduction and What I Need To Learn",
@@ -245,7 +245,7 @@ def init_db():
 
     
     # Playlist JAVA
-    playlist_java = Playlist(title= "Complete JAVA Tutorial")
+    playlist_java = Playlist(title= "Complete JAVA Tutorial", thumbnail="static/imgs/java/java.png")
     video1_java = Video(
                 title = "Complete JAVA Tutorial (Part 01)",
                 description = "Introduction and What I Need To Learn",
@@ -288,7 +288,7 @@ def init_db():
     
     
     # JQuery Playlist
-    playlist_JQuery = Playlist(title="Complete JQuery Tutorial")
+    playlist_JQuery = Playlist(title="Complete JQuery Tutorial", thumbnail="static/imgs/JQuery/JQuery.png")
     video1_JQuery = Video(
         title="Complete JQuery Tutorial (Part 01)",
         description="Introduction to JQuery",
@@ -330,7 +330,7 @@ def init_db():
     db.session.commit()
 
     # Sass Playlist
-    playlist_Sass = Playlist(title="Complete Sass Tutorial")
+    playlist_Sass = Playlist(title="Complete Sass Tutorial" , thumbnail="static/imgs/Sass/Learn Sass.png")
     video1_Sass = Video(
         title="Complete Sass Tutorial (Part 01)",
         description="Introduction to Sass",
