@@ -121,6 +121,7 @@ const WatchVideo = () => {
       const response = await axios.put(`http://localhost:5000/courses/${playlistId}/${videoId}/comment/${commentId}`, {
         text: updatedText,
         user_id: user.user_id,
+        updated_at: new Date().toISOString()
       });
 
       setComments((prevComments) =>
