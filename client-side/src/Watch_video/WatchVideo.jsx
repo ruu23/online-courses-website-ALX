@@ -118,10 +118,19 @@ const WatchVideo = () => {
     }
 
     try {
-      const response = await axios.patch(`http://localhost:5000/courses/${playlistId}/${videoId}/comment/${commentId}`, {
-        text: updatedText,
-        user_id: user.user_id,
-      });
+      const response = await axios.patch(
+        `http://localhost:5000/courses/${playlistId}/${videoId}/comment/${commentId}`,
+        {
+          text: updatedText,
+          user_id: user.user_id,
+          playlist_id: playlistId
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
 
       setComments((prevComments) =>
         prevComments.map((comment) =>
