@@ -42,7 +42,7 @@ const Contact = () => {
           name: formData.name.trim(),
           email: formData.email.trim(),
           number: formData.number.trim(),
-          message: formData.message.trim() 
+          message: formData.msg.trim() 
         })
       });
 
@@ -109,7 +109,7 @@ const Contact = () => {
               name="msg"
               className="box"
               placeholder="enter your message"
-              value={formData.message}
+              value={formData.msg}
               onChange={handleChange}
               required
               maxLength="1000"
