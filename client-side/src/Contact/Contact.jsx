@@ -11,6 +11,11 @@ const Contact = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
+  const getUserFromLocalStorage = () => {
+    const userStr = localStorage.getItem('user');
+    return userStr ? JSON.parse(userStr) : null;
+  };
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -24,41 +29,40 @@ const Contact = () => {
     setMessage('');
 
     try {
-      // Get user_id from localStorage
-      const user_id = localStorage.getItem('user_id'); 
+      const user = getUserFromLocalStorage();
 
-      if (!user_id) {
+      if (!user || !user.user_id) {
         setError('Please login to send a message');
         return;
       }
 
-      const response = await fetch('/contact', {
+      const response = await fetch('http://localhost:5000/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          user_id: user_id,
-          name: formData.name.trim(),
-          email: formData.email.trim(),
-          number: formData.number.trim(),
-          message: formData.msg.trim() 
+          user_id: user.user_id,
+          name: formData.name,
+          email: formData.email,
+          number: formData.number,
+          message: formData.msg
         })
       });
 
       const data = await response.json();
       
-      if (data.error) {
-        throw new Error(data.error);
+      if (response.ok) {
+        setMessage('Message sent successfully!');
+        setFormData({
+          name: '',
+          email: '',
+          number: '',
+          msg: ''
+        });
+      } else {
+        throw new Error(data.error || 'Failed to send message');
       }
-
-      setMessage('Message sent successfully!');
-      setFormData({
-        name: '',
-        email: '',
-        number: '',
-        msg: ''
-      });
     } catch (err) {
       setError(err.message || 'Failed to send message. Please try again.');
     }
@@ -96,7 +100,7 @@ const Contact = () => {
               className="box"
             />
             <input
-              type="number"
+              type="tel"
               placeholder="enter your number"
               name="number"
               value={formData.number}
