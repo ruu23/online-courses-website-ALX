@@ -1,4 +1,36 @@
+import { useState } from 'react';
+import Footer from '../Footer/Footer';
+
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    number: '',
+    msg: ''
+  });
+  const [message, setMessage] = useState('');
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // submission logic
+    console.log('Form submitted:', formData);
+    setMessage('Message sent successfully!');
+    // Clear form
+    setFormData({
+      name: '',
+      email: '',
+      number: '',
+      msg: ''
+    });
+  };
+
   return (
     <>
       <section className="contact">
@@ -6,13 +38,51 @@ const Contact = () => {
           <div className="image">
             <img src="/images/contact-img.svg" alt="contact" />
           </div>
-          <form action="" method="post">
+          <form onSubmit={handleSubmit}>
             <h3>get in touch</h3>
-            <input type="text" placeholder="enter your name" name="name" required maxLength="50" className="box" />
-            <input type="email" placeholder="enter your email" name="email" required maxLength="50" className="box" />
-            <input type="number" placeholder="enter your number" name="number" required maxLength="50" className="box" />
-            <textarea name="msg" className="box" placeholder="enter your message" required maxLength="1000" cols="30" rows="10"></textarea>
-            <input type="submit" value="send message" className="inline-btn" name="submit" />
+            {message && <div className="success-message" style={{ color: 'green', marginBottom: '1rem' }}>{message}</div>}
+            <input 
+              type="text" 
+              placeholder="enter your name" 
+              name="name" 
+              value={formData.name}
+              onChange={handleChange}
+              required 
+              maxLength="50" 
+              className="box" 
+            />
+            <input 
+              type="email" 
+              placeholder="enter your email" 
+              name="email" 
+              value={formData.email}
+              onChange={handleChange}
+              required 
+              maxLength="50" 
+              className="box" 
+            />
+            <input 
+              type="number" 
+              placeholder="enter your number" 
+              name="number" 
+              value={formData.number}
+              onChange={handleChange}
+              required 
+              maxLength="50" 
+              className="box" 
+            />
+            <textarea 
+              name="msg" 
+              className="box" 
+              placeholder="enter your message" 
+              value={formData.msg}
+              onChange={handleChange}
+              required 
+              maxLength="1000" 
+              cols="30" 
+              rows="10"
+            ></textarea>
+            <input type="submit" value="send message" className="inline-btn" />
           </form>
         </div>
 
@@ -36,10 +106,7 @@ const Contact = () => {
           </div>
         </div>
       </section>
-
-      <footer className="footer">
-        &copy; copyright @ 2022 by <span>mr. web designer</span> | all rights reserved!
-      </footer>
+      <Footer/>
     </>
   );
 };
