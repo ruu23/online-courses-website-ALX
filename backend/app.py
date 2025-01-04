@@ -2,7 +2,7 @@ from flask import request, jsonify
 from flask_migrate import Migrate
 from sqlalchemy import or_
 from config import create_app, db
-from models import Users, Playlist, Video, init_db, Comment, Like, SavedVideo, Teacher
+from models import Users, Playlist, Video, init_db, Comment, Like, SavedVideo, Teacher, Contact
 from werkzeug.utils import secure_filename
 import os
 from flask import send_from_directory
@@ -353,6 +353,79 @@ def add_comment(playlist_id, video_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
+    
+@app.route('/courses/<int:playlist_id>/<int:video_id>/comment/<int:comment_id>', methods=['PATCH'])
+def update_Comment(playlist_id, video_id, comment_id):
+    try:
+        data = request.json
+
+        if not data:
+            return jsonify({"error", "No data found"})
+        playlist_id = data.get("playlist_id")
+        user_id = data.get("user_id")
+        new_text = data.get("text")
+
+        if not user_id:
+            return jsonify({"error", " user_id requird"})
+        if not new_text or not new_text.strip():
+            return jsonify({"error", "no text found"})
+        
+        comment = Comment.query.filter_by(id=comment_id, video_id=video_id).first()
+        if not comment:
+            return jsonify({"error", "no found"})
+        if comment.user_id != user_id:
+            return jsonify({"error", " login first"})
+        
+        #update comment
+        comment.text = new_text.strip()
+        comment.created_at = datetime.utcnow()
+        db.session.commit()
+
+        return jsonify({"message": " comment edited successfully",
+                        "comment":{
+                        "id": comment.id ,
+                        "text" : comment.text,
+                        "user_id": comment.user_id,
+                        "created_at": comment.created_at.isoformat()
+                        } 
+                        }),200
+
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}),500
+    
+@app.route('/courses/<int:playlist_id>/<int:video_id>/comment/<int:comment_id>', methods=['DELETE'])
+def delete_comment(playlist_id, video_id, comment_id):
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+
+        user_id = data.get('user_id')
+
+        if not user_id:
+            return jsonify({"error": "User ID is required"}), 400
+
+        # Find the comment
+        comment = Comment.query.filter_by(id=comment_id, video_id=video_id).first()
+        if not comment:
+            return jsonify({'error': 'Comment not found'}), 404
+
+        # Verify the user owns this comment
+        if comment.user_id != user_id:
+            return jsonify({'error': 'You are not authorized to delete this comment'}), 403
+
+        # Delete the comment
+        db.session.delete(comment)
+        db.session.commit()
+
+        return jsonify({'message': 'Comment deleted successfully'}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
 
 @app.route('/courses/<int:playlist_id>/<int:video_id>/like', methods = ['POST'])
 def like_video(playlist_id, video_id):
@@ -501,9 +574,29 @@ def delete_teacher(id):
     db.session.commit()
     return jsonify({"message": "Teacher deleted successfully"}), 200
 
+#contact
+@app.route('/contact', methods=["POST"])
+def contact():
+    try:
+        data = request.json
 
+        if not data:
+            return jsonify({"error": " no data found"})
+        user_id = data.get("user_id")
+        name = data.get("name")
+        email = data.get("email")
+        number = data.get("number")
+        message = data.get("message")
 
-
+        if not user_id:
+            return jsonify({"error": "user id required"})
+        contact = Contact(user_id=user_id.strip(), name=name.strip(), email=email.strip(), number=number.strip(), message=message.strip())
+        db.session.add(contact)
+        db.session.commit()
+        return jsonify({"message": "message sent succssefully"})
+    except Exception as e:
+        return jsonify({"error", str(e)}), 500
+    
 
 if __name__ == '__main__':
     with app.app_context():

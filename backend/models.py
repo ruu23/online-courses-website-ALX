@@ -85,6 +85,7 @@ class Teacher(db.Model):
     img_url = db.Column(db.String(200), nullable=True)
     role = db.Column(db.String(50), nullable=False, default="teacher")
 
+    
     # Data into json file
     def to_json(self):
 
@@ -99,6 +100,15 @@ class Teacher(db.Model):
             "imgUrl": self.img_url,
         } 
 
+class Contact(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(100), unique=True , nullable=False)
+    number = db.Column(db.Integer, nullable=False)
+    message = db.Column(db.String(200), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    user = db.relationship('Users', backref='contact')
 
 def init_db():
     if Playlist.query.filter_by(title="Complete HTML Tutorial").first() is None:

@@ -118,9 +118,10 @@ const WatchVideo = () => {
     }
 
     try {
-      const response = await axios.put(`http://localhost:5000/courses/${playlistId}/${videoId}/comment/${commentId}`, {
+      const response = await axios.patch(`http://localhost:5000/courses/${playlistId}/${videoId}/comment/${commentId}`, {
         text: updatedText,
         user_id: user.user_id,
+        playlistId : playlistId
       });
 
       setComments((prevComments) =>
