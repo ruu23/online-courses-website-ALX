@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../Footer/Footer";
+import { useUser } from '../UserContext';
 
 const Register = () => {
+  const { setUser } = useUser();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
@@ -61,6 +63,7 @@ const Register = () => {
           saved_videos_count: 0
         };
         
+        setUser(userData); // Update user context
         localStorage.setItem("userData", JSON.stringify(userData));
         
         // Dispatch event to notify components about user data change

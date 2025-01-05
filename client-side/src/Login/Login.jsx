@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../Footer/Footer";
+import { useUser } from '../UserContext';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { setUser } = useUser();
   const [formData, setFormData] = useState({
     email: "",
     pass: "",
@@ -19,6 +21,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('Login form submitted'); // Debugging line
 
     try {
       const response = await fetch("http://localhost:5000/login", {
@@ -28,38 +31,27 @@ const Login = () => {
       });
 
       const result = await response.json();
+      console.log('Server Response:', result); // Log the server response
       if (response.ok) {
-        // Store user ID directly
-        localStorage.setItem("user_id", result.user_id);
-        
-        // Create userData object
+        // Store all user data in one place
         const userData = {
           user_id: result.user_id,
           user_Name: result.username,
           user_type: result.user_type,
           email: formData.email,
-          imgUrl: result.img_url || '/images/pic-1.jpg',
-          comments_count: result.comments_count || 0,
-          likes_count: result.likes_count || 0,
-          saved_videos_count: result.saved_videos_count || 0
+          imgUrl: result.img_url ? 
+            (result.img_url.startsWith('http') ? result.img_url : `http://localhost:5000${result.img_url}`) : 
+            null,
         };
-        
-        localStorage.setItem("userData", JSON.stringify(userData));
-        
-        // Dispatch event to notify components about user data change
-        window.dispatchEvent(new Event('userDataChanged'));
-        
-        // Redirect based on user type
-        if (result.user_type === 'teacher') {
-          navigate('/teachers');
-        } else {
-          navigate('/');
-        }
+        console.log('User Data:', userData); // Log the user data
+        setUser(userData); // Update user state
+        localStorage.setItem('userData', JSON.stringify(userData)); // Persist user data
+        navigate('/profile'); // Redirect to profile page
       } else {
         alert(result.message || 'Login failed');
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error during login:", error); // Log any errors that occur
       alert("An error occurred. Please try again.");
     }
   };

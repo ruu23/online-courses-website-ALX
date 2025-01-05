@@ -16,6 +16,7 @@ import HeaderAndSideBar from './HeaderAndSideBar/HeaderAndSideBar';
 import SearchResults from './SearchResults';
 import { useState } from 'react';
 import axios from 'axios';
+import { UserProvider } from './UserContext';
 
 function App() {
   const [searchResults, setSearchResults] = useState([]);
@@ -33,24 +34,26 @@ function App() {
   };
 
   return (
-    <BrowserRouter>
-      <HeaderAndSideBar onSearch={handleSearch} />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/teachers" element={<Teachers />} />
-        <Route path="/teachers/:id" element={<TeacherProfile />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/update-profile" element={<Update />} />
-        <Route path="/courses" element={<Courses />} />
-        <Route path="/courses/:playlistId/:videoId" element={<WatchVideo />} />
-        <Route path="/courses/:playlistId" element={<Playlist />} />
-        <Route path="/search" element={<SearchResults results={searchResults} />} />
-      </Routes>
-    </BrowserRouter>
+    <UserProvider>
+      <BrowserRouter>
+        <HeaderAndSideBar onSearch={handleSearch} />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/teachers" element={<Teachers />} />
+          <Route path="/teachers/:id" element={<TeacherProfile />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/update-profile" element={<Update />} />
+          <Route path="/courses" element={<Courses />} />
+          <Route path="/courses/:playlistId/:videoId" element={<WatchVideo />} />
+          <Route path="/courses/:playlistId" element={<Playlist />} />
+          <Route path="/search" element={<SearchResults results={searchResults} />} />
+        </Routes>
+      </BrowserRouter>
+    </UserProvider>
   );
 }
 

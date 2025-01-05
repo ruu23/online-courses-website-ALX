@@ -19,13 +19,15 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userId = localStorage.getItem('user_id');
+        const storedUserData = localStorage.getItem('userData');
+        const userData = storedUserData ? JSON.parse(storedUserData) : null;
         
-        if (!userId) {
+        if (!userData || !userData.user_id) {
           window.location.href = '/login';
           return;
         }
-        const response = await fetch(`http://localhost:5000/profile?user_id=${userId}`);
+        
+        const response = await fetch(`http://localhost:5000/profile?user_id=${userData.user_id}`);
         if (!response.ok) {
           throw new Error(`Error: ${response.statusText}`);
         }

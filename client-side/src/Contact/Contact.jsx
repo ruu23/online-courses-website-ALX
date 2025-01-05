@@ -6,15 +6,10 @@ const Contact = () => {
     name: '',
     email: '',
     number: '',
-    msg: ''
+    message: ''
   });
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-
-  const getUserFromLocalStorage = () => {
-    const userStr = localStorage.getItem('user');
-    return userStr ? JSON.parse(userStr) : null;
-  };
 
   const handleChange = (e) => {
     setFormData({
@@ -25,14 +20,13 @@ const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setMessage('');
-
+    
     try {
-      const user = getUserFromLocalStorage();
-
-      if (!user || !user.user_id) {
-        setError('Please login to send a message');
+      const userId = JSON.parse(localStorage.getItem('userData'))?.user_id;
+      console.log('Retrieved userId:', userId);
+      
+      if (!userId) {
+        setError('Please login first');
         return;
       }
 
@@ -42,29 +36,32 @@ const Contact = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          user_id: user.user_id,
+          user_id: String(userId), // Convert userId to string
           name: formData.name,
           email: formData.email,
           number: formData.number,
-          message: formData.msg
-        })
+          message: formData.message
+        }),
       });
 
       const data = await response.json();
-      
+
       if (response.ok) {
         setMessage('Message sent successfully!');
+        setError('');
         setFormData({
           name: '',
           email: '',
           number: '',
-          msg: ''
+          message: ''
         });
       } else {
-        throw new Error(data.error || 'Failed to send message');
+        setError(data.error || 'Failed to send message');
+        setMessage('');
       }
-    } catch (err) {
-      setError(err.message || 'Failed to send message. Please try again.');
+    } catch (error) {
+      setError('Failed to send message. Please try again later.');
+      setMessage('');
     }
   };
 
@@ -75,10 +72,13 @@ const Contact = () => {
           <div className="image">
             <img src="/images/contact-img.svg" alt="contact" />
           </div>
+          
           <form onSubmit={handleSubmit}>
             <h3>get in touch</h3>
+            
             {error && <div className="error-message" style={{ color: 'red', marginBottom: '1rem' }}>{error}</div>}
             {message && <div className="success-message" style={{ color: 'green', marginBottom: '1rem' }}>{message}</div>}
+            
             <input
               type="text"
               placeholder="enter your name"
@@ -89,6 +89,7 @@ const Contact = () => {
               maxLength="50"
               className="box"
             />
+
             <input
               type="email"
               placeholder="enter your email"
@@ -99,6 +100,7 @@ const Contact = () => {
               maxLength="50"
               className="box"
             />
+
             <input
               type="tel"
               placeholder="enter your number"
@@ -106,20 +108,22 @@ const Contact = () => {
               value={formData.number}
               onChange={handleChange}
               required
-              maxLength="50"
+              maxLength="15"
               className="box"
             />
+
             <textarea
-              name="msg"
+              name="message"
               className="box"
               placeholder="enter your message"
-              value={formData.msg}
+              value={formData.message}
               onChange={handleChange}
               required
               maxLength="1000"
               cols="30"
               rows="10"
             ></textarea>
+
             <input type="submit" value="send message" className="inline-btn" />
           </form>
         </div>
@@ -131,12 +135,14 @@ const Contact = () => {
             <a href="tel:1234567890">123-456-7890</a>
             <a href="tel:1112223333">111-222-3333</a>
           </div>
+          
           <div className="box">
             <i className="fas fa-envelope"></i>
             <h3>email address</h3>
             <a href="mailto:shaikhanas@gmail.com">shaikhanas@gmail.com</a>
             <a href="mailto:anasbhai@gmail.com">anasbhai@gmail.com</a>
           </div>
+          
           <div className="box">
             <i className="fas fa-map-marker-alt"></i>
             <h3>office address</h3>
@@ -144,7 +150,7 @@ const Contact = () => {
           </div>
         </div>
       </section>
-      <Footer/>
+      <Footer />
     </>
   );
 };

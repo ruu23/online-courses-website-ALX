@@ -22,19 +22,23 @@ const HeaderAndSideBar = ({ onSearch }) => {
     return storedData ? JSON.parse(storedData) : {
       user_Name: "user name",
       user_type: "student",
-      imgUrl: "images/pic-1.jpg"
+      imgUrl: "/public/images/pic-1.jpg"
     };
   });
+  const [imgError, setImgError] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const userId = localStorage.getItem('user_id');
-      if (userId) {
+      const storedData = localStorage.getItem('userData');
+      const userData = storedData ? JSON.parse(storedData) : null;
+      
+      if (userData && userData.user_id) {
         try {
-          const response = await fetch(`http://localhost:5000/profile?user_id=${userId}`);
+          const response = await fetch(`http://localhost:5000/profile?user_id=${userData.user_id}`);
           if (response.ok) {
             const data = await response.json();
+            // Handle the image URL
             if (data.imgUrl) {
               const cleanPath = data.imgUrl.replace(/\/static\/uploads\/static\/uploads\//, '/static/uploads/');
               data.imgUrl = cleanPath.startsWith('http') 
@@ -51,20 +55,30 @@ const HeaderAndSideBar = ({ onSearch }) => {
       }
     };
 
+    // Initial fetch
     fetchUserData();
 
     // Listen for user data changes
     const handleUserDataChange = () => {
       const storedData = localStorage.getItem('userData');
       if (storedData) {
-        setUserData(JSON.parse(storedData));
+        const data = JSON.parse(storedData);
+        if (data.imgUrl) {
+          const cleanPath = data.imgUrl.replace(/\/static\/uploads\/static\/uploads\//, '/static/uploads/');
+          data.imgUrl = cleanPath.startsWith('http') 
+            ? cleanPath 
+            : `http://localhost:5000${cleanPath}`;
+        }
+        setUserData(data);
       }
     };
 
     window.addEventListener('userDataChanged', handleUserDataChange);
+    window.addEventListener('storage', handleUserDataChange);
 
     return () => {
       window.removeEventListener('userDataChanged', handleUserDataChange);
+      window.removeEventListener('storage', handleUserDataChange);
     };
   }, []);
 
@@ -72,7 +86,15 @@ const HeaderAndSideBar = ({ onSearch }) => {
     const handleStorageChange = () => {
       const storedData = localStorage.getItem('userData');
       if (storedData) {
-        setUserData(JSON.parse(storedData));
+        const parsedData = JSON.parse(storedData);
+        // Handle the image URL
+        if (parsedData.imgUrl) {
+          const cleanPath = parsedData.imgUrl.replace(/\/static\/uploads\/static\/uploads\//, '/static/uploads/');
+          parsedData.imgUrl = cleanPath.startsWith('http') 
+            ? cleanPath 
+            : `http://localhost:5000${cleanPath}`;
+        }
+        setUserData(parsedData);
       }
     };
 
@@ -150,7 +172,19 @@ const HeaderAndSideBar = ({ onSearch }) => {
             <div id="toggle-btn" className={`fas ${darkMode ? 'fa-moon' : 'fa-sun'}`} onClick={toggleDarkMode}></div>
           </div>
           <div className={`profile ${profileActive ? 'active' : ''}`}>
-            <img src={userData.imgUrl} className="w-24 h-24 rounded-full object-cover mx-auto" alt="" />
+            <img 
+              src={userData.imgUrl} 
+              className="w-24 h-24 rounded-full object-cover mx-auto" 
+              alt="" 
+              onError={() => setImgError(true)}
+            />
+            {imgError && (
+              <img 
+                src="/public/images/pic-1.jpg" 
+                className="w-24 h-24 rounded-full object-cover mx-auto" 
+                alt=""
+              />
+            )}
             <h3 className="name">{userData.user_Name}</h3>
             <p className="role">{userData.user_type}</p>
             <Link to="/profile" className="btn">view profile</Link>
@@ -167,7 +201,19 @@ const HeaderAndSideBar = ({ onSearch }) => {
           <i className="fas fa-times"></i>
         </div>
         <div className="profile">
-          <img src={userData.imgUrl} className="w-24 h-24 rounded-full object-cover mx-auto" alt="Profile" />
+          <img 
+            src={userData.imgUrl} 
+            className="w-24 h-24 rounded-full object-cover mx-auto" 
+            alt="Profile" 
+            onError={() => setImgError(true)}
+          />
+          {imgError && (
+            <img 
+              src="/public/images/pic-1.jpg" 
+              className="w-24 h-24 rounded-full object-cover mx-auto" 
+              alt=""
+            />
+          )}
           <h3 className="name">{userData.user_Name}</h3>
           <p className="role">{userData.user_type}</p>
           <Link to="/profile" className="btn">view profile</Link>
