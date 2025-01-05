@@ -35,7 +35,7 @@ const Profile = () => {
 
         if (data.imgUrl) {
           let cleanPath = data.imgUrl;
-          
+
           // Handle potential double "/static/uploads/"
           if (cleanPath.includes('/static/uploads//')) {
             cleanPath = cleanPath.replace('/static/uploads//', '/static/uploads/');
@@ -44,7 +44,7 @@ const Profile = () => {
           // Prepend base URL if the path is relative
           data.imgUrl = cleanPath.startsWith('http')
             ? cleanPath
-            : `http://localhost:5000${cleanPath}`;
+            : `http://localhost:5000/static/uploads/${cleanPath}`;
         } else {
           data.imgUrl = "/public/images/default-avatar.jpg";
         }

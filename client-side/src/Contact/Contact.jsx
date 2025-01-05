@@ -20,27 +20,44 @@ const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
+    // Check for empty fields before sending the request
+    if (!formData.name || !formData.email || !formData.number || !formData.message) {
+      setError('All fields are required.');
+      setMessage('');
+      return;
+    }
+
     try {
       const userId = localStorage.getItem('user_id');
-      console.log('Retrieved userId:', userId);
-      
+
       if (!userId) {
-        setError('Please login first');
+        setError('Please log in to send a message.');
+        setMessage('');
         return;
+      }
+
+      // Check if the email already exists
+      const existingContactResponse = await fetch(`http://localhost:5000/contact/check-email?email=${formData.email}`);
+      
+      if (existingContactResponse.ok) {
+        const existingData = await existingContactResponse.json();
+        if (existingData.exists) {
+          setError('This email is already associated with another contact.');
+          setMessage('');
+          return;
+        }
       }
 
       const response = await fetch('http://localhost:5000/contact', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           user_id: userId,
           name: formData.name,
           email: formData.email,
           number: formData.number,
-          message: formData.message
+          message: formData.message,
         }),
       });
 
@@ -49,18 +66,14 @@ const Contact = () => {
       if (response.ok) {
         setMessage('Message sent successfully!');
         setError('');
-        setFormData({
-          name: '',
-          email: '',
-          number: '',
-          message: ''
-        });
+        setFormData({ name: '', email: '', number: '', message: '' });
       } else {
-        setError(data.error || 'Failed to send message');
+        const errorMessage = data.error || 'Failed to send message. Please try again.';
+        setError(errorMessage);
         setMessage('');
       }
-    } catch (error) {
-      setError('Failed to send message. Please try again later.');
+    } catch (err) {
+      setError('Failed to send message. Please check your connection and try again.');
       setMessage('');
     }
   };
