@@ -22,7 +22,7 @@ const Contact = () => {
     e.preventDefault();
     
     try {
-      const userId = JSON.parse(localStorage.getItem('userData'))?.user_id;
+      const userId = localStorage.getItem('user_id');
       console.log('Retrieved userId:', userId);
       
       if (!userId) {
@@ -36,7 +36,7 @@ const Contact = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          user_id: String(userId), // Convert userId to string
+          user_id: userId,
           name: formData.name,
           email: formData.email,
           number: formData.number,
@@ -62,6 +62,33 @@ const Contact = () => {
     } catch (error) {
       setError('Failed to send message. Please try again later.');
       setMessage('');
+    }
+  };
+
+  const handleLogin = async (email, password) => {
+    try {
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, pass: password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem('user_id', data.user_id);
+        localStorage.setItem('username', data.username);
+        localStorage.setItem('img_url', data.imgUrl);
+        // Redirect or update UI as needed
+      } else {
+        console.error(data.message);
+        setError(data.message);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setError('Error logging in. Please try again later.');
     }
   };
 

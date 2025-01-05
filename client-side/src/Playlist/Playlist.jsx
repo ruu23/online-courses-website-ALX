@@ -52,6 +52,33 @@ const Playlist = () => {
     }
   };
 
+  const handleLogin = async (email, password) => {
+    try {
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, pass: password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem('user_id', data.user_id);
+        localStorage.setItem('username', data.username);
+        localStorage.setItem('img_url', data.imgUrl);
+        alert('Login successful!');
+      } else {
+        console.error(data.message);
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error logging in. Please try again.');
+    }
+  };
+
   if (loading) return <div className='heading'>Loading...</div>;
   if (error) return <div className='heading'>Error: {error}</div>;
   if (!playlist) return <div className='heading'>Playlist not found</div>;
@@ -73,9 +100,18 @@ const Playlist = () => {
               </button>
             </form>
             <div className="thumb">
-              <img src={playlist.thumbnail || '/images/thumb-1.png'} alt="" />
+              <img 
+                src={`http://localhost:5000/${playlist.videos[0]?.thumbnail}`} 
+                alt="Playlist Thumbnail" 
+                onError={(e) => {
+                  e.target.src = '/images/fallback-thumbnail.png';
+                  e.target.onerror = null; // Prevent infinite loop
+                }} 
+              />
               <span>{playlist.videos?.length || 0} videos</span>
             </div>
+            {console.log('Playlist Data:', playlist)}
+            {console.log('Thumbnail URL:', getFullUrl(playlist.videos[0]?.thumbnail))}
           </div>
           <div className="column flex items-start mb-[250px]">
             <div className="details">

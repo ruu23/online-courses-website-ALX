@@ -32,20 +32,25 @@ const Login = () => {
 
       const result = await response.json();
       console.log('Server Response:', result); // Log the server response
+      console.log('Inspecting Server Response:', JSON.stringify(result, null, 2)); // Inspect server response
       if (response.ok) {
         // Store all user data in one place
         const userData = {
-          user_id: result.user_id,
-          user_Name: result.username,
-          user_type: result.user_type,
+          user_id: result.user_id !== undefined ? result.user_id : null, // Handle undefined
+          user_Name: result.username || "Unknown User", // Fallback to default if undefined
+          user_type: result.user_type || "student", // Default to "student" if not provided
           email: formData.email,
-          imgUrl: result.img_url ? 
-            (result.img_url.startsWith('http') ? result.img_url : `http://localhost:5000${result.img_url}`) : 
-            null,
+          imgUrl: result.img_url
+            ? `http://localhost:5000/static/uploads/${result.img_url}` // Ensure correct path
+            : "http://localhost:5000/static/uploads/default-avatar.jpg", // Default avatar
         };
-        console.log('User Data:', userData); // Log the user data
+        console.log('Full Backend Response:', result);
+        console.log('Processed User Data:', userData);
         setUser(userData); // Update user state
-        localStorage.setItem('userData', JSON.stringify(userData)); // Persist user data
+        localStorage.setItem("userData", JSON.stringify(userData)); // Persist user data
+        localStorage.setItem("user_id", userData.user_id || "N/A");
+        localStorage.setItem("img_url", userData.imgUrl || "N/A");
+        localStorage.setItem("username", userData.user_Name || "Guest");
         navigate('/profile'); // Redirect to profile page
       } else {
         alert(result.message || 'Login failed');

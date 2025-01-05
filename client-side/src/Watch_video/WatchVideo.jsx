@@ -15,28 +15,39 @@ const WatchVideo = () => {
   const [isSaved, setIsSaved] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
 
+  // Updated getUserFromLocalStorage to handle multiple storage formats
+  const getUserFromLocalStorage = () => {
+    try {
+      // First try to get direct user_id
+      const directUserId = localStorage.getItem('user_id');
+      if (directUserId) {
+        return { user_id: directUserId };
+      }
+
+      // Then try to get from userData object
+      const userDataStr = localStorage.getItem('userData');
+      if (userDataStr) {
+        const userData = JSON.parse(userDataStr);
+        if (userData && userData.user_id) {
+          return { user_id: userData.user_id };
+        }
+      }
+
+      // If no user data found
+      return null;
+    } catch (error) {
+      console.error('Error getting user from localStorage:', error);
+      return null;
+    }
+  };
+
   useEffect(() => {
     const fetchVideoData = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/courses/${playlistId}/${videoId}`);
-        const data = response.data;
-        
-        setVideo(data);
-        setComments(data.comments || []);
-        
-        // Get user to check if video is liked
-        const user = getUserFromLocalStorage();
-        if (user && data.likes && Array.isArray(data.likes)) {
-          setIsLiked(data.likes.includes(user.user_id));
-        } else {
-          setIsLiked(false);
-        }
-        
-        // Set the like count from the server
-        setLikeCount(data.like_count || 0);
-        setIsSaved(data.is_saved || false);
+        setVideo(response.data);
+        setComments(response.data.comments || []);
         setLoading(false);
-        setError(null);
       } catch (err) {
         setError(err.response?.data?.error || 'Failed to fetch video');
         setLoading(false);
@@ -46,41 +57,11 @@ const WatchVideo = () => {
     fetchVideoData();
   }, [playlistId, videoId]);
 
-  const getFullUrl = (path) => {
-    if (!path) return '';
-    if (path.startsWith('http')) return path;
-    return `http://localhost:5000/${path}`;
-  };
-
-  const getUserFromLocalStorage = () => {
-    try {
-      // First try to get the user ID directly
-      const userId = localStorage.getItem('user_id');
-      if (userId) {
-        return { user_id: userId };
-      }
-      
-      // If not found, try to get from userData
-      const userData = localStorage.getItem('userData');
-      if (userData) {
-        const parsed = JSON.parse(userData);
-        if (parsed && parsed.user_id) {
-          return { user_id: parsed.user_id };
-        }
-      }
-      
-      return null;
-    } catch (error) {
-      console.error('Error getting user from localStorage:', error);
-      return null;
-    }
-  };
-
   const handleComment = async (e) => {
     e.preventDefault();
-
     const user = getUserFromLocalStorage();
-    if (!user) {
+    
+    if (!user || !user.user_id) {
       setError('Please log in to comment');
       return;
     }
@@ -88,21 +69,28 @@ const WatchVideo = () => {
     if (!newComment.trim()) return;
 
     try {
-      const response = await axios.post(`http://localhost:5000/courses/${playlistId}/${videoId}/comment`, {
-        text: newComment.trim(),
-        user_id: user.user_id,
-        img:user.imgUrl
-      });
+      const response = await axios.post(
+        `http://localhost:5000/courses/${playlistId}/${videoId}/comment`,
+        {
+          text: newComment.trim(),
+          user_id: user.user_id
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
 
       const newCommentData = {
         id: response.data.id,
         text: response.data.text,
         user_id: user.user_id,
         username: response.data.username,
-        created_at: response.data.created_at,
+        created_at: response.data.created_at
       };
 
-      setComments((prevComments) => [...prevComments, newCommentData]);
+      setComments(prev => [...prev, newCommentData]);
       setNewComment('');
       setError(null);
     } catch (err) {
@@ -112,7 +100,8 @@ const WatchVideo = () => {
 
   const handleEditComment = async (commentId, updatedText) => {
     const user = getUserFromLocalStorage();
-    if (!user) {
+    
+    if (!user || !user.user_id) {
       setError('Please log in to edit comments');
       return;
     }
@@ -132,12 +121,16 @@ const WatchVideo = () => {
         }
       );
 
-      setComments((prevComments) =>
-        prevComments.map((comment) =>
-          comment.id === commentId ? { ...comment, text: response.data.text } : comment
-        )
-      );
-      setError(null);
+      if (response.data.comment) {
+        setComments(prev => 
+          prev.map(comment => 
+            comment.id === commentId 
+              ? { ...comment, text: response.data.comment.text }
+              : comment
+          )
+        );
+        setError(null);
+      }
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to edit comment');
     }
@@ -145,14 +138,24 @@ const WatchVideo = () => {
 
   const handleDeleteComment = async (commentId) => {
     const user = getUserFromLocalStorage();
-    if (!user) {
+    
+    if (!user || !user.user_id) {
       setError('Please log in to delete comments');
       return;
     }
 
     try {
-      await axios.delete(`http://localhost:5000/courses/${playlistId}/${videoId}/comment/${commentId}`);
-      setComments((prevComments) => prevComments.filter((comment) => comment.id !== commentId));
+      await axios.delete(
+        `http://localhost:5000/courses/${playlistId}/${videoId}/comment/${commentId}`,
+        {
+          data: { user_id: user.user_id },
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      
+      setComments(prev => prev.filter(comment => comment.id !== commentId));
       setError(null);
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to delete comment');
@@ -161,17 +164,23 @@ const WatchVideo = () => {
 
   const handleLike = async () => {
     const user = getUserFromLocalStorage();
-    if (!user) {
+    
+    if (!user || !user.user_id) {
       setError('Please log in to like videos');
       return;
     }
 
     try {
-      const response = await axios.post(`http://localhost:5000/courses/${playlistId}/${videoId}/like`, {
-        user_id: user.user_id,
-      });
+      const response = await axios.post(
+        `http://localhost:5000/courses/${playlistId}/${videoId}/like`,
+        { user_id: user.user_id },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
 
-      // Update like status and count from server response
       setIsLiked(response.data.is_liked);
       setLikeCount(response.data.like_count);
       setError(null);
@@ -182,19 +191,58 @@ const WatchVideo = () => {
 
   const handleSave = async () => {
     const user = getUserFromLocalStorage();
-    if (!user) {
+    
+    if (!user || !user.user_id) {
       setError('Please log in to save videos');
       return;
     }
 
     try {
-      const response = await axios.post(`http://localhost:5000/courses/${playlistId}/${videoId}/save`, {
-        user_id: user.user_id,
-      });
+      const response = await axios.post(
+        `http://localhost:5000/courses/${playlistId}/${videoId}/save`,
+        { user_id: user.user_id },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
       setIsSaved(response.data.is_saved);
       setError(null);
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to save video');
+    }
+  };
+
+  const getFullUrl = (path) => {
+    if (!path) return '';
+    if (path.startsWith('http')) return path;
+    return `http://localhost:5000/${path}`;
+  };
+
+  const handleLogin = async (email, password) => {
+    try {
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, pass: password }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        localStorage.setItem('user_id', data.user_id);
+        localStorage.setItem('username', data.username);
+        localStorage.setItem('img_url', data.imgUrl);
+        // Redirect or update UI as needed
+      } else {
+        console.error(data.message);
+        setError(data.message);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setError('Failed to log in');
     }
   };
 
@@ -207,24 +255,15 @@ const WatchVideo = () => {
       <section className="watch-video">
         <div className="video-container">
           <div className="video">
-            <video 
-              src={getFullUrl(video.video_url)} 
-              controls 
-              autoPlay
-            ></video>
+            <video src={getFullUrl(video.video_url)} controls autoPlay></video>
           </div>
 
           <h3 className="title">{video.video_title}</h3>
 
           <div className="info">
-            <p>
-              <i className="fas fa-calendar"></i>
-              <span>Posted on: </span>
-              {new Date(video.created_at).toLocaleDateString()}
-            </p>
-            <p>
+            <p className="text-sm">
               <i className="fas fa-heart"></i>
-              <span>{likeCount} Likes</span>
+              <span>{likeCount} likes</span>
             </p>
           </div>
 
@@ -234,7 +273,7 @@ const WatchVideo = () => {
               onClick={handleLike}
             >
               <i className={`fas fa-heart ${isLiked ? 'active' : ''}`}></i>
-              <span className={isLiked ? 'active' : ''}>{likeCount} {likeCount === 0 ? 'Like' : 'Likes'}</span>
+              <span>Like</span>
             </button>
 
             <button 
@@ -249,68 +288,62 @@ const WatchVideo = () => {
       </section>
 
       <section className="comments">
-        <h1 className="heading">Comments</h1>
-
+        <h1 className="heading">Add Comment</h1>
         <form onSubmit={handleComment} className="add-comment">
-          <h3 style={{ fontWeight: "bold" }}>Add Comments</h3>
           <textarea
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             placeholder="Add a comment..."
             required
+            className="w-full p-2 border rounded"
           />
           <button 
             type="submit" 
-            value="add comment"
-            disabled={!newComment.trim()}
             className="inline-btn"
+            disabled={!newComment.trim()}
           >
             Add Comment
           </button>
         </form>
 
-        <h1 className="heading">User Comments</h1>
+        <h1 className="heading mt-8">Comments</h1>
         <div className="box-container">
           {comments.length === 0 ? (
-            <h3>No comments yet. Be the first to comment!</h3>
+            <p className="text-center">No comments yet</p>
           ) : (
-            comments.map((comment) => (
-              <div key={comment.id} className="box">
-                <div className="user">
-                  <img src={comment.img || "/images/pic-2.jpg"} alt=""/>
-                  <div>
-                    <h3 style={{ fontWeight: "bold" }}>{comment.username || `User ${comment.user_id}`}</h3>
-                    <span>
-                      {new Date(comment.created_at).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </span>
+            comments.map((comment) => {
+              const user = getUserFromLocalStorage();
+              return (
+                <div key={comment.id} className="box">
+                  <div className="user">
+                    <div>
+                      <h3>{comment.username}</h3>
+                      <span>{new Date(comment.created_at).toLocaleDateString()}</span>
+                    </div>
                   </div>
+                  <p className="comment-box">{comment.text}</p>
+                  {user && user.user_id === comment.user_id && (
+                    <div className="flex-btn">
+                      <button 
+                        onClick={() => {
+                          const updatedText = prompt('Edit your comment:', comment.text);
+                          if (updatedText) handleEditComment(comment.id, updatedText);
+                        }}
+                        className="inline-option-btn"
+                      >
+                        Edit
+                      </button>
+                      <button 
+                        onClick={() => handleDeleteComment(comment.id)}
+                        className="inline-delete-btn"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  )}
                 </div>
-                <p className="comment-box">{comment.text}</p>
-                <div className="flex-btn">
-                  <button 
-                    onClick={() => {
-                      const updatedText = prompt('Edit your comment:', comment.text);
-                      if (updatedText) handleEditComment(comment.id, updatedText);
-                    }}
-                    className="inline-option-btn"
-                  >
-                    Edit
-                  </button>
-                  <button 
-                    onClick={() => handleDeleteComment(comment.id)} 
-                    className="inline-delete-btn"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </section>

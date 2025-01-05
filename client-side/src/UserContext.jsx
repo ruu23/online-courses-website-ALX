@@ -15,8 +15,33 @@ export const UserProvider = ({ children }) => {
         }
     }, []);
 
+    const handleLogin = async (email, password) => {
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, pass: password }),
+            });
+            const data = await response.json();
+            if (response.ok) {
+                localStorage.setItem('user_id', data.user_id);
+                localStorage.setItem('username', data.username);
+                localStorage.setItem('img_url', data.imgUrl);
+                setUser({ user_id: data.user_id, username: data.username, imgUrl: data.imgUrl });
+                // Redirect or update UI as needed
+            } else {
+                console.error(data.message);
+                // Display error message to user
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
     return (
-        <UserContext.Provider value={{ user, setUser }}>
+        <UserContext.Provider value={{ user, setUser, handleLogin }}>
             {children}
         </UserContext.Provider>
     );
