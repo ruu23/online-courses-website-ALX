@@ -33,7 +33,7 @@ The Online Courses Website is designed to provide an interactive platform for ed
 
 ---
 
-## 🛠️ **Features**
+## Features
 
 ### 🌞 **Dynamic Theme Toggler**
 - Switch between light and dark modes effortlessly with JavaScript and LocalStorage.
