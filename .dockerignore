@@ -1,0 +1,19 @@
+# Python files
+*.pyc
+*.pyo
+__pycache__/
+
+# Node.js dependencies
+client-side/node_modules/
+client-side/dist/
+client-side/build/
+
+# Logs
+*.log
+
+# IDE/editor-specific files
+.vscode/
+.idea/
+
+# Environment files
+.env
