@@ -1,5 +1,5 @@
 # 📚 Responsive E-Learning Website
-![Alt text](image_url_or_path "Optional Title")
+![Alt text](https://github.com/ruu23/online-courses-website-ALX/blob/master/backend/static/imgs/website.jpg)
 
 
 🎉 **Welcome to the ultimate guide to creating a complete responsive multi-page online education website!** This project is perfect for beginners who want to learn how to build a modern e-learning platform like **YouTube** with **React**, **HTML**, **CSS**. 🚀
