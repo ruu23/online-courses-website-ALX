@@ -1,21 +1,27 @@
-# Node.js runtime as a parent image
+# Using Node.js runtime as a parent image
 FROM node:20-alpine
 
-# The working directory in the container
+# Set the working directory in the container
 WORKDIR /app
 
-# Copy the package.json and install dependencies
+# Copy package.json and package-lock.json into the container
 COPY ./client-side/package.json /app/package.json
-RUN npm install -g serve
+COPY ./client-side/package-lock.json /app/package-lock.json
 
-# Copy the rest of the application code
+# Install dependencies from package.json (including vite)
+RUN npm install
+
+# Install global dependencies (if required)
+RUN npm install -g serve vite
+
+# Copy the rest of the application code into the container
 COPY ./client-side /app
 
-# Build the application
+# Build the application using Vite
 RUN npm run build
 
 # Expose the port the app runs on
 EXPOSE 3000
 
-# Start the application
+# Start the application with "serve"
 CMD ["serve", "-s", "dist"]
