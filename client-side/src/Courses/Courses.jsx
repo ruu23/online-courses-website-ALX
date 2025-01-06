@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Footer from '../Footer/Footer';
 import Tracks from '../Tracks/Tracks';
 
+
 export default function Courses() {
   const [playlists, setPlaylists] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -51,7 +52,7 @@ export default function Courses() {
         <div className="box-container">
           {loading ? (
             <div className="box">
-              <p>Loading courses...</p>
+              <p className='heading'>Loading courses...</p>
             </div>
           ) : error ? (
             <div className="box">
@@ -65,15 +66,26 @@ export default function Courses() {
             </div>
           ) : playlists.length === 0 ? (
             <div className="box">
-              <p>No courses available at the moment.</p>
+              <p className='heading'>No courses available at the moment.</p>
             </div>
           ) : (
             playlists.map(playlist => (
               <div key={playlist.id} className="box">
-                <h3 className="title">{playlist.title}</h3>
-                <Link to={`/playlist/${playlist.id}`} className="inline-btn">
-                  View Playlist
-                </Link>
+                <div className='thumb'>
+                  <img 
+                    src={`http://localhost:5000/${playlist.thumbnail}`} 
+                    alt={playlist.title}
+                    onError={(e) => {
+                      e.target.src = '/placeholder-course.png'; // Add a placeholder image
+                      e.target.onerror = null; // Prevent infinite loop
+                    }}
+                  />
+                  <span>6 videos</span>
+                </div>
+                  <h3 className="title" style={{fontWeight: 'bold'}}>{playlist.title}</h3>
+                  <Link to={`/courses/${playlist.id}`} className="inline-btn">
+                    View Playlist
+                  </Link>
               </div>
             ))
           )}

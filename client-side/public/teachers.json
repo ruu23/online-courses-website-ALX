@@ -1,0 +1,40 @@
+{
+  "teachers": [
+    {
+      "id": 1,
+      "name": "john deo",
+      "subject": "developer",
+      "img_url": "/images/pic-2.jpg"
+    },
+    {
+      "id": 2,
+      "name": "john deo",
+      "subject": "developer",
+      "img_url": "/images/pic-3.jpg"
+    },
+    {
+      "id": 3,
+      "name": "john deo",
+      "subject": "developer",
+      "img_url": "/images/pic-4.jpg"
+    },
+    {
+      "id": 4,
+      "name": "john deo",
+      "subject": "developer",
+      "img_url": "/images/pic-5.jpg"
+    },
+    {
+      "id": 5,
+      "name": "john deo",
+      "subject": "developer",
+      "img_url": "/images/pic-6.jpg"
+    },
+    {
+      "id": 6,
+      "name": "john deo",
+      "subject": "developer",
+      "img_url": "/images/pic-7.jpg"
+    }
+  ]
+}

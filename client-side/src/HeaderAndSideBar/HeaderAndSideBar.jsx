@@ -3,43 +3,48 @@ import { useState, useEffect } from 'react';
 
 const HeaderAndSideBar = ({ onSearch }) => {
   const [sideBarActive, setSideBarActive] = useState(false);
-  const [darkMode, setDarkMode] = useState(localStorage.getItem('dark-mode') === 'enabled');
+  const [darkMode, setDarkMode] = useState(() => {
+    const storedMode = localStorage.getItem('dark-mode');
+    return storedMode ? storedMode === 'enabled' : new Date().getHours() >= 18 || new Date().getHours() < 6;
+  });
   const [profileActive, setProfileActive] = useState(false);
   const [searchActive, setSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [userData, setUserData] = useState({
-    user_Name: "shaikh anas",
-    user_type: "student",
-    imgUrl: "images/pic-1.jpg"
+  const [userData, setUserData] = useState(() => {
+    const storedData = localStorage.getItem('userData');
+    return storedData ? JSON.parse(storedData) : {
+      user_Name: "user name",
+      user_type: "student",
+      imgUrl: "/public/images/pic-1.jpg"
+    };
   });
+  const [imgError, setImgError] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const userId = localStorage.getItem('user_id');
-      if (userId) {
-        try {
-          const response = await fetch(`http://localhost:5000/profile?user_id=${userId}`);
-          if (response.ok) {
-            const data = await response.json();
-            // Handle the image URL
-            if (data.imgUrl) {
-              // Remove any duplicate 'static/uploads' in the path
-              const cleanPath = data.imgUrl.replace(/\/static\/uploads\/static\/uploads\//, '/static/uploads/');
-              data.imgUrl = cleanPath.startsWith('http') 
-                ? cleanPath 
-                : `http://localhost:5000${cleanPath}`;
-            }
-            setUserData(data);
-          }
-          
-        } catch (error) {
-          console.error("Failed to fetch user data:", error);
+    const handleUserDataChange = () => {
+      const storedData = localStorage.getItem('userData');
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+
+        if (parsedData.imgUrl) {
+          const cleanPath = parsedData.imgUrl.replace(/\/static\/uploads\/static\/uploads\//, '/static/uploads/');
+          parsedData.imgUrl = cleanPath.startsWith('http') 
+            ? cleanPath 
+            : `http://localhost:5000${cleanPath}`;
         }
+
+        setUserData(parsedData);
       }
     };
 
-    fetchUserData();
+    window.addEventListener('storage', handleUserDataChange);
+    window.addEventListener('userDataChanged', handleUserDataChange);
+
+    return () => {
+      window.removeEventListener('storage', handleUserDataChange);
+      window.removeEventListener('userDataChanged', handleUserDataChange);
+    };
   }, []);
 
   const toggleSideBar = () => {
@@ -47,16 +52,8 @@ const HeaderAndSideBar = ({ onSearch }) => {
     document.body.classList.toggle('active', !sideBarActive);
   };
 
-  useEffect(() => {
-    if (darkMode) {
-      document.body.classList.add('dark');
-    } else {
-      document.body.classList.remove('dark');
-    }
-    localStorage.setItem('dark-mode', darkMode ? 'enabled' : 'disabled');
-  }, [darkMode]);
-
   const toggleDarkMode = () => {
+    localStorage.setItem('dark-mode-manual', 'true');
     setDarkMode(!darkMode);
   };
 
@@ -90,7 +87,12 @@ const HeaderAndSideBar = ({ onSearch }) => {
             <div id="toggle-btn" className={`fas ${darkMode ? 'fa-moon' : 'fa-sun'}`} onClick={toggleDarkMode}></div>
           </div>
           <div className={`profile ${profileActive ? 'active' : ''}`}>
-            <img src={userData.imgUrl} className="w-24 h-24 rounded-full object-cover mx-auto" alt="" />
+            <img
+              src={imgError ? "/public/images/pic-1.jpg" : userData.imgUrl || "/public/images/pic-1.jpg"}
+              alt="Profile"
+              className="w-24 h-24 rounded-full object-cover mx-auto"
+              onError={() => setImgError(true)}
+            />
             <h3 className="name">{userData.user_Name}</h3>
             <p className="role">{userData.user_type}</p>
             <Link to="/profile" className="btn">view profile</Link>
@@ -107,10 +109,16 @@ const HeaderAndSideBar = ({ onSearch }) => {
           <i className="fas fa-times"></i>
         </div>
         <div className="profile">
-          <img src={userData.imgUrl} className="w-24 h-24 rounded-full object-cover mx-auto" alt="Profile" />
+          <img
+            src={imgError ? "/public/images/pic-1.jpg" : userData.imgUrl || "/public/images/pic-1.jpg"}
+            alt="Profile"
+            className="w-24 h-24 rounded-full object-cover mx-auto"
+            onError={() => setImgError(true)}
+          />
           <h3 className="name">{userData.user_Name}</h3>
           <p className="role">{userData.user_type}</p>
           <Link to="/profile" className="btn">view profile</Link>
+          
         </div>
         <nav className="navbar">
           <Link to="/"><i className="fas fa-home"></i><span>home</span></Link>

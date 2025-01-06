@@ -1,14 +1,18 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Footer from "../Footer/Footer";
+import { useUser } from '../UserContext';
 
 const Register = () => {
+  const { setUser } = useUser();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     pass: "",
     c_pass: "",
     profile: null,
-    user_type: "", // Default role
+    user_type: "",
   });
 
   const handleChange = (e) => {
@@ -21,6 +25,11 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (formData.pass !== formData.c_pass) {
+      alert("Passwords do not match!");
+      return;
+    }
 
     const data = new FormData();
     data.append("name", formData.name);
@@ -36,17 +45,68 @@ const Register = () => {
         body: data,
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        alert(errorData.error || 'Registration failed');
-        return;
-      }
-
       const result = await response.json();
-      alert(result.message || 'Registration successful');
+      
+      if (response.ok) {
+        // Store user ID directly
+        localStorage.setItem("user_id", result.user_id);
+        
+        // Create userData object
+        const userData = {
+          user_id: result.user_id,
+          user_Name: formData.name,
+          user_type: formData.user_type,
+          email: formData.email,
+          imgUrl: formData.profile ? URL.createObjectURL(formData.profile) : '/images/pic-1.jpg',
+          comments_count: 0,
+          likes_count: 0,
+          saved_videos_count: 0
+        };
+        
+        setUser(userData); // Update user context
+        localStorage.setItem("userData", JSON.stringify(userData));
+        
+        // Dispatch event to notify components about user data change
+        window.dispatchEvent(new Event('userDataChanged'));
+        
+        // Redirect based on user type
+        if (formData.user_type === 'teacher') {
+          navigate('/teachers');
+        } else {
+          navigate('/');
+        }
+      } else {
+        alert(result.message || 'Registration failed');
+      }
     } catch (error) {
       console.error("Error:", error);
       alert("An error occurred. Please try again.");
+    }
+  };
+
+  const handleLogin = async (email, password) => {
+    try {
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, pass: password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem('user_id', data.user_id);
+        localStorage.setItem('username', data.username);
+        localStorage.setItem('img_url', data.imgUrl);
+        // Redirect or update UI as needed
+      } else {
+        console.error(data.message);
+        // Display error message to user
+      }
+    } catch (error) {
+      console.error('Error:', error);
     }
   };
 
@@ -60,7 +120,7 @@ const Register = () => {
           <input
             type="text"
             name="name"
-            placeholder="Enter your username"
+            placeholder="Enter your name"
             required
             maxLength="50"
             className="box"
@@ -100,34 +160,30 @@ const Register = () => {
             onChange={handleChange}
           />
 
-          <p>Select Role <span>*</span></p>
+          <p>Select Profile <span>*</span></p>
+          <input
+            type="file"
+            name="profile"
+            accept="image/*"
+            required
+            className="box"
+            onChange={handleChange}
+          />
+
+          <p>Select User Type <span>*</span></p>
           <select
             name="user_type"
             className="box"
-            value={formData.user_type}
-            onChange={handleChange}
             required
+            onChange={handleChange}
+            value={formData.user_type}
           >
+            <option value="">Select Type</option>
             <option value="student">Student</option>
             <option value="teacher">Teacher</option>
           </select>
 
-          <p>Select Profile <span>*</span></p>
-          <input
-            type="file"
-            accept="image/*"
-            required
-            className="box"
-            name="profile"
-            onChange={handleChange}
-          />
-
-          <input
-            type="submit"
-            value="Register New"
-            name="submit"
-            className="btn"
-          />
+          <input type="submit" value="Register Now" className="btn" />
         </form>
       </section>
 

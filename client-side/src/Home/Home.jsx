@@ -203,6 +203,7 @@ const Home = () => {
           <Link to="/courses" className="inline-option-btn">view all courses</Link>
         </div>
       </section>
+      
       <Footer />
     </div>
   );

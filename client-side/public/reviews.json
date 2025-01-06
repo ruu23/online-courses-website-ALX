@@ -1,43 +1,43 @@
 {
   "reviews": [
     {
-      "text": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Necessitatibus, suscipit a. Quibusdam, dignissimos consectetur. Sed ullam iusto eveniet qui aut quibusdam vero voluptate libero facilis fuga. Eligendi eaque molestiae modi?",
+      "text": "The web development course exceeded my expectations! The step-by-step tutorials on React and Node.js were incredibly clear. I went from knowing basic HTML to building full-stack applications in just a few months.",
       "student": {
-        "name": "John Deo",
+        "name": "John Anderson",
         "image": "/images/pic-2.jpg",
-        "rating": 4.5
-      }
-    },
-    {
-      "text": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Necessitatibus, suscipit a. Quibusdam, dignissimos consectetur. Sed ullam iusto eveniet qui aut quibusdam vero voluptate libero facilis fuga. Eligendi eaque molestiae modi?",
-      "student": {
-        "name": "Jane Smith",
-        "image": "/images/pic-3.jpg",
         "rating": 5
       }
     },
     {
-      "text": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Necessitatibus, suscipit a. Quibusdam, dignissimos consectetur. Sed ullam iusto eveniet qui aut quibusdam vero voluptate libero facilis fuga. Eligendi eaque molestiae modi?",
+      "text": "I'm amazed by how much I've learned in the Python programming course. The instructor breaks down complex concepts into manageable pieces, and the hands-on projects really helped cement my understanding. Now I'm confidently building my own applications!",
       "student": {
-        "name": "Sam Lee",
+        "name": "Sarah Chen",
+        "image": "/images/pic-3.jpg",
+        "rating": 4.5
+      }
+    },
+    {
+      "text": "The UI/UX design course was exactly what I needed to transition into tech. The practical assignments and real-world examples made learning enjoyable. Within weeks of completing the course, I landed my first design job!",
+      "student": {
+        "name": "Maria Rodriguez",
         "image": "/images/pic-4.jpg",
-        "rating": 4
+        "rating": 5
       }
     },
     {
-      "text": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Necessitatibus, suscipit a. Quibusdam, dignissimos consectetur. Sed ullam iusto eveniet qui aut quibusdam vero voluptate libero facilis fuga. Eligendi eaque molestiae modi?",
+      "text": "As a working professional, the flexible schedule and comprehensive content of the data science course were perfect for me. The machine learning projects were challenging but incredibly rewarding. Highly recommend to anyone interested in AI and data analysis.",
       "student": {
-        "name": "Sara Kim",
+        "name": "Alex Thompson",
         "image": "/images/pic-5.jpg",
-        "rating": 3.5
+        "rating": 4.5
       }
     },
     {
-      "text": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Necessitatibus, suscipit a. Quibusdam, dignissimos consectetur. Sed ullam iusto eveniet qui aut quibusdam vero voluptate libero facilis fuga. Eligendi eaque molestiae modi?",
+      "text": "The JavaScript bootcamp was intense but worth every minute! The live coding sessions and code reviews were invaluable. I especially appreciated the focus on modern frameworks and best practices. This course truly prepared me for real-world development.",
       "student": {
-        "name": "Michael Brown",
+        "name": "David Kumar",
         "image": "/images/pic-6.jpg",
-        "rating": 4
+        "rating": 5
       }
     }
   ]

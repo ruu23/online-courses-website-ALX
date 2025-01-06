@@ -38,10 +38,10 @@ const Tracks = () => {
             <div className="thumb">
               <img src={track.image} alt={track.name} />
             </div>
-            <h3 className="title">{track.name}</h3>
-            <Link to={`/courses/${track.id}`} className="inline-btn">
+            <h3 className="title" style={{fontWeight: 'bold'}}>{track.name}</h3>
+            {/*<Link to={`/courses/${track.id}`} className="inline-btn">
               View Courses
-            </Link>
+            </Link>*/}
           </div>
         ))}
       </div>
