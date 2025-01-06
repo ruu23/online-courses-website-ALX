@@ -113,7 +113,7 @@ online-courses-website/
 
 ```
 
-## ❤️ Contribute
+## Contributing
 We’d love your contributions! Feel free to fork, create issues, or submit pull requests.
 ---
 ## Endpoints
@@ -139,7 +139,7 @@ We’d love your contributions! Feel free to fork, create issues, or submit pull
 - **PATCH `/teachers/<int:id>`**: Update a teacher  
 - **DELETE `/teachers/<int:id>`**: Delete a teacher  
 ---
-## 📄 License
+## License
 This project is licensed under the MIT License.
 ---
 
