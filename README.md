@@ -71,7 +71,7 @@ Ensure you have the following installed:
 - [Docker Compose](https://docs.docker.com/compose/install/)
 
 ---
-
+## Running the Application with Docker
 ## 🚀 **Getting Started**
 
 ### 1️⃣ Clone the Repository
