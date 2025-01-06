@@ -16,9 +16,11 @@
 
 ---
 
-## 🌟 **Project Overview**
 
-This project will guide you step-by-step to create an e-learning website with multiple responsive features, including a **video player**, **playlists**, and **user profiles**. Perfect for educators, students, or anyone looking to dive into web development.
+## Project Overview
+
+The Online Courses Website is designed to provide an interactive platform for educators and students. It includes features like user registration, course browsing, video streaming, and interactive comment sections.
+
 
 ---
 ## Technologies Used
