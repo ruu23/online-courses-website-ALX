@@ -84,7 +84,17 @@ git clone https://github.com/your-username/online-courses-website.git
 ## 2️⃣ Build and Start the Containers
 ```bash
 docker-compose up --build
+docker run -p 3000:3000 online-courses-website-alx-frontend:latest
+docker run -p 5000:5000 online-courses-website-alx-backend:latest
 ```
+if you have problem with building docker try this command:
+```
+docker-compose build --no-cache
+docker-compose up --build
+docker run -p 3000:3000 online-courses-website-alx-frontend:latest
+docker run -p 5000:5000 online-courses-website-alx-backend:latest
+```
+
 This command will:
 
 - Build the Docker images for the backend and frontend.
