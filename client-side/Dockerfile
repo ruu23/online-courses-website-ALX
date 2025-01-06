@@ -1,12 +1,11 @@
-#  Node.js runtime as a parent image
+# Node.js runtime as a parent image
 FROM node:20-alpine
 
-# the working directory in the container
+# The working directory in the container
 WORKDIR /app
 
+# Copy the package.json and install dependencies
 COPY ./client-side/package.json /app/package.json
-
-# Install dependencies
 RUN npm install -g serve
 
 # Copy the rest of the application code

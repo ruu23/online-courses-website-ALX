@@ -1,7 +1,7 @@
-# an official Python runtime as a parent image
+# An official Python runtime as a parent image
 FROM python:3.12-slim
 
-# the working directory in the container
+# The working directory in the container
 WORKDIR /app
 
 # Copy the backend requirements and application

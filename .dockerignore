@@ -3,7 +3,10 @@
 *.pyo
 __pycache__/
 
-# Node.js dependencies
+# Node.js dependencies (in both frontend and backend)
+node_modules/
+
+# Client-side build files
 client-side/node_modules/
 client-side/dist/
 client-side/build/
