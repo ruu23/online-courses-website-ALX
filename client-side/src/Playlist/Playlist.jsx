@@ -101,11 +101,11 @@ const Playlist = () => {
             </form>
             <div className="thumb">
               <img 
-                src={`http://localhost:5000/${playlist.videos[0]?.thumbnail}`} 
+                src={`http://localhost:5000/${playlist.videos[0]?.thumbnail}`}  
                 alt="Playlist Thumbnail" 
                 onError={(e) => {
                   e.target.src = '/images/fallback-thumbnail.png';
-                  e.target.onerror = null; // Prevent infinite loop
+                  e.target.onerror = null; 
                 }} 
               />
               <span>{playlist.videos?.length || 0} videos</span>

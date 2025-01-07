@@ -100,6 +100,7 @@ const Register = () => {
         localStorage.setItem('user_id', data.user_id);
         localStorage.setItem('username', data.username);
         localStorage.setItem('img_url', data.imgUrl);
+        alert(data.message || 'Register successed');
         // Redirect or update UI as needed
       } else {
         console.error(data.message);

@@ -52,6 +52,7 @@ const Login = () => {
         localStorage.setItem("img_url", userData.imgUrl || "N/A");
         localStorage.setItem("username", userData.user_Name || "Guest");
         navigate('/profile'); // Redirect to profile page
+        alert(result.message || 'Login successed');
       } else {
         alert(result.message || 'Login failed');
       }

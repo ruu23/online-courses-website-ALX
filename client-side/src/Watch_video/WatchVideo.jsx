@@ -309,7 +309,7 @@ const WatchVideo = () => {
         <h1 className="heading mt-8">Comments</h1>
         <div className="box-container">
           {comments.length === 0 ? (
-            <p className="text-center">No comments yet</p>
+            <p style={{ fontWeight: "bold" }}>No comments yet</p>
           ) : (
             comments.map((comment) => {
               const user = getUserFromLocalStorage();
