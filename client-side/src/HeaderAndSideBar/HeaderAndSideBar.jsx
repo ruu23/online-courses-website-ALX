@@ -3,13 +3,14 @@ import { useState, useEffect } from 'react';
 
 const HeaderAndSideBar = ({ onSearch }) => {
   const [sideBarActive, setSideBarActive] = useState(false);
-  const [darkMode, setDarkMode] = useState(() => {
-    const storedMode = localStorage.getItem('dark-mode');
-    return storedMode ? storedMode === 'enabled' : new Date().getHours() >= 18 || new Date().getHours() < 6;
-  });
   const [profileActive, setProfileActive] = useState(false);
   const [searchActive, setSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [darkMode, setDarkMode] = useState(() => {
+    const storedMode = localStorage.getItem('dark-mode');
+    return storedMode === 'enabled' || (!storedMode && (new Date().getHours() >= 18 || new Date().getHours() < 6));
+    });
+    
   const [userData, setUserData] = useState(() => {
     const storedData = localStorage.getItem('userData');
     return storedData ? JSON.parse(storedData) : {
@@ -20,6 +21,16 @@ const HeaderAndSideBar = ({ onSearch }) => {
   });
   const [imgError, setImgError] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add('dark');
+      localStorage.setItem('dark-mode', 'enabled');
+    } else {
+      document.body.classList.remove('dark');
+      localStorage.setItem('dark-mode', 'disabled');
+    }
+  }, [darkMode]);
 
   useEffect(() => {
     const handleUserDataChange = () => {
@@ -51,16 +62,16 @@ const HeaderAndSideBar = ({ onSearch }) => {
     setSideBarActive(!sideBarActive);
     document.body.classList.toggle('active', !sideBarActive);
   };
-
-  const toggleDarkMode = () => {
-    localStorage.setItem('dark-mode-manual', 'true');
-    setDarkMode(!darkMode);
-  };
+  
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     onSearch(searchQuery);
     navigate('/search');
+  };
+
+  const toggleDarkMode = () => {
+    setDarkMode(prev => !prev);
   };
 
   return (
