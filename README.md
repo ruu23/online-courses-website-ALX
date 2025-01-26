@@ -28,7 +28,7 @@ The Online Courses Website is designed to provide an interactive platform for ed
 - Flask for the backend
 - React for the frontend
 - Docker and Docker Compose for containerization
-- PostgreSQL for database management
+- MySQL for database management
 - HTML, CSS, and JavaScript for frontend design
 
 ---
