@@ -146,8 +146,7 @@ We’d love your contributions! Feel free to fork, create issues, or submit pull
 - **POST `/teachers`**: Create a new teacher  
 - **GET `/teachers`**: Get all teachers  
 - **GET `/teachers/<int:id>`**: Get a specific teacher  
-- **PATCH `/teachers/<int:id>`**: Update a teacher  
-- **DELETE `/teachers/<int:id>`**: Delete a teacher  
+- **PATCH `/teachers/<int:id>`**: Update a teacher   
 ---
 ## License
 This project is licensed under the MIT License.
